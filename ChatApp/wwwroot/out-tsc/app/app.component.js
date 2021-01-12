@@ -1,8 +1,15 @@
 import { __decorate } from "tslib";
 import { Component } from '@angular/core';
 let AppComponent = class AppComponent {
-    constructor() {
+    constructor(accountService, router) {
+        this.accountService = accountService;
+        this.router = router;
         this.title = 'chat-app';
+        this.accountService.user.subscribe(x => this.user = x);
+    }
+    logout() {
+        this.accountService.logout();
+        this.router.navigate(['/login']);
     }
 };
 AppComponent = __decorate([
