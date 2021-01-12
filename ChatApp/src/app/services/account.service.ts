@@ -33,7 +33,7 @@ export class AccountService {
   }
 
   login(userEmail: string) {
-    return this._http.post<User>(`${window.location.origin}/users/authenticate?userEmail=${userEmail}`, {})
+      return this._http.post<User>(`${window.location.origin}/users/authenticate?email=${userEmail}`, {})
       .pipe(map(user => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         localStorage.setItem('user', JSON.stringify(user));

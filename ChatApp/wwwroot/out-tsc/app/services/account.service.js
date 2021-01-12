@@ -19,7 +19,7 @@ let AccountService = class AccountService {
         return this._http.get(`${window.location.origin}/users/${userEmail}`);
     }
     login(userEmail) {
-        return this._http.post(`${window.location.origin}/users/authenticate?userEmail=${userEmail}`, {})
+        return this._http.post(`${window.location.origin}/users/authenticate?email=${userEmail}`, {})
             .pipe(map(user => {
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             localStorage.setItem('user', JSON.stringify(user));
