@@ -1,6 +1,7 @@
 import { __decorate } from "tslib";
 import { Component } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { first } from 'rxjs/operators';
 let RegisterComponent = class RegisterComponent {
     constructor(formBuilder, route, router, accountService) {
         this.formBuilder = formBuilder;
@@ -9,10 +10,11 @@ let RegisterComponent = class RegisterComponent {
         this.accountService = accountService;
         this.loading = false;
         this.submitted = false;
-        // redirect to home if already logged in
-        // if (this.accountService.userValue) {
-        //     this.router.navigate(['/']);
-        // }
+        this.isError = false;
+        this.isSuccess = false;
+        if (this.accountService.getUserInfo) {
+            this.router.navigate(['/']);
+        }
     }
     ngOnInit() {
         this.registerForm = this.formBuilder.group({
@@ -28,21 +30,27 @@ let RegisterComponent = class RegisterComponent {
             return;
         }
         this.loading = true;
-        //this.accountService.register(this.form.value)
-        //  .pipe(first())
-        //  .subscribe(
-        //    data => {
-        //      this.alertService.success('Registration successful', { keepAfterRouteChange: true });
-        //      this.router.navigate(['../login'], { relativeTo: this.route });
-        //    },
-        //    error => {
-        //      this.alertService.error(error);
-        //      this.loading = false;
-        //    });
+        this.accountService.register(this.registerForm.value)
+            .pipe(first())
+            .subscribe(data => {
+            this.isSuccess = true;
+            this.showMsg = 'User created';
+            this.loading = false;
+            this.showAlert = true;
+            //this.router.navigate(['/login'], { relativeTo: this.route });
+        }, error => {
+            this.isError = true;
+            this.showMsg = error.error.message;
+            this.loading = false;
+            this.showAlert = true;
+        });
     }
     onReset() {
         this.submitted = false;
         this.registerForm.reset();
+    }
+    closeAlert() {
+        this.showAlert = !this.showAlert;
     }
 };
 RegisterComponent = __decorate([

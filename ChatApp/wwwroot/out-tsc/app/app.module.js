@@ -10,6 +10,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatService } from './services/chat.service';
 import { AccountService } from './services/account.service';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -27,7 +28,7 @@ AppModule = __decorate([
             FormsModule,
             HttpClientModule
         ],
-        providers: [ChatService, AccountService],
+        providers: [ChatService, AccountService, { provide: LocationStrategy, useClass: HashLocationStrategy }],
         bootstrap: [AppComponent]
     })
 ], AppModule);

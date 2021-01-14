@@ -1,8 +1,5 @@
-﻿using ChatApp.DataAccess;
+﻿using ChatApp.Repository.Entity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ChatApp.Repository
 {

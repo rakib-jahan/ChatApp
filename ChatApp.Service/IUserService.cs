@@ -1,12 +1,10 @@
-﻿using ChatApp.DataAccess;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ChatApp.Model;
 
 namespace ChatApp.Service
 {
     public interface IUserService
     {
-        User GetUserByEmail(string email);
+        UserViewModel GetUserByEmail(string email);
+        void RegisterUser(UserViewModel user);
     }
 }

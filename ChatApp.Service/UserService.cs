@@ -1,9 +1,7 @@
-﻿using ChatApp.DataAccess;
+﻿using ChatApp.Model;
 using ChatApp.Repository;
-using System;
-using System.Collections.Generic;
+using ChatApp.Repository.Entity;
 using System.Linq;
-using System.Text;
 
 namespace ChatApp.Service
 {
@@ -16,9 +14,34 @@ namespace ChatApp.Service
             _repository = repository;
         }
 
-        public User GetUserByEmail(string email)
+        public UserViewModel GetUserByEmail(string email)
         {
-            return _repository.FindByCondition(x => x.Email.Equals(email)).FirstOrDefault();
+            var user = _repository.FindByCondition(x => x.Email.Equals(email)).FirstOrDefault();
+
+            if (user != null)
+            {
+                return new UserViewModel() {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+            }
+            else
+                return null;
+        }
+
+        public void RegisterUser(UserViewModel user)
+        {
+            var users = new User()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+
+            _repository.Create(users);
         }
     }
 }

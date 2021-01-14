@@ -7,55 +7,67 @@ import { AccountService } from '../services/account.service';
 @Component({ templateUrl: 'register.component.html' })
 export class RegisterComponent implements OnInit {
 
-  loading = false;
-  submitted = false;
-  registerForm: FormGroup;
+    loading = false;
+    submitted = false;
+    registerForm: FormGroup;
+    isError = false;
+    showMsg: string;
+    isSuccess = false;
+    showAlert: boolean;
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private accountService: AccountService,
-  ) {
-    // redirect to home if already logged in
-    // if (this.accountService.userValue) {
-    //     this.router.navigate(['/']);
-    // }
-  }
-
-  ngOnInit() {
-    this.registerForm = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]]
-    });
-  }
-
-  get f() { return this.registerForm.controls; }
-
-  onSubmit() {
-    this.submitted = true;
-
-    if (this.registerForm.invalid) {
-      return;
+    constructor(
+        private formBuilder: FormBuilder,
+        private route: ActivatedRoute,
+        private router: Router,
+        private accountService: AccountService,
+    ) {
+        if (this.accountService.getUserInfo) {
+            this.router.navigate(['/']);
+        }
     }
 
-    this.loading = true;
-    //this.accountService.register(this.form.value)
-    //  .pipe(first())
-    //  .subscribe(
-    //    data => {
-    //      this.alertService.success('Registration successful', { keepAfterRouteChange: true });
-    //      this.router.navigate(['../login'], { relativeTo: this.route });
-    //    },
-    //    error => {
-    //      this.alertService.error(error);
-    //      this.loading = false;
-    //    });
-  }
+    ngOnInit() {
+        this.registerForm = this.formBuilder.group({
+            firstName: ['', Validators.required],
+            lastName: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]]
+        });
+    }
 
-  onReset() {
-    this.submitted = false;
-    this.registerForm.reset();
-  }
+    get f() { return this.registerForm.controls; }
+
+    onSubmit() {
+        this.submitted = true;
+
+        if (this.registerForm.invalid) {
+            return;
+        }
+
+        this.loading = true;
+        this.accountService.register(this.registerForm.value)
+            .pipe(first())
+            .subscribe(
+                data => {
+                    this.isSuccess = true;
+                    this.showMsg = 'User created';
+                    this.loading = false;
+                    this.showAlert = true;
+                    //this.router.navigate(['/login'], { relativeTo: this.route });
+                },
+                error => {
+                    this.isError = true;
+                    this.showMsg = error.error.message;
+                    this.loading = false;
+                    this.showAlert = true;
+                });
+    }
+
+    onReset() {
+        this.submitted = false;
+        this.registerForm.reset();
+    }
+
+    closeAlert() {
+        this.showAlert = !this.showAlert;
+    }
 }

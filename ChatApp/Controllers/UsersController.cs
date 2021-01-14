@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ChatApp.Model;
 using ChatApp.Models;
 using ChatApp.Service;
 using Microsoft.AspNetCore.Mvc;
@@ -14,34 +11,26 @@ namespace ChatApp.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _repository;
+        private readonly IUserService _service;
 
-        public UsersController(IUserService repository)
+        public UsersController(IUserService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
-        [HttpGet]
-        public UserViewModel Get(string email)
-        {
-            var user = _repository.GetUserByEmail(email);
-
-            return new UserViewModel()
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Email = user.Email
-            };
-        }
+        //[HttpGet]
+        //public UserViewModel Get(string email)
+        //{
+        //    return _service.GetUserByEmail(email);
+        //}
 
         [HttpPost("authenticate")]
         public IActionResult Authenticate(string email)
         {
-            var user = _repository.GetUserByEmail(email);
+            var user = _service.GetUserByEmail(email);
 
             if (user == null)
-                return BadRequest(new { message = "Username not found" });
+                return BadRequest(new { message = "Email not found" });
 
             return Ok(new UserViewModel()
                 {
@@ -51,6 +40,24 @@ namespace ChatApp.Controllers
                     Email = user.Email
                 }
             );
+        }
+
+        [HttpPost("register")]
+        public IActionResult Register(UserViewModel user)
+        {
+            try
+            {
+                if (_service.GetUserByEmail(user.Email) != null)
+                    return BadRequest(new { message = "Email already exists" });
+
+                _service.RegisterUser(user);
+            }
+            catch (System.Exception)
+            {
+                return BadRequest(new { message = "User not created" });
+            }
+
+            return Ok();
         }
     }
 }
