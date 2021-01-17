@@ -11,7 +11,6 @@ let LoginComponent = class LoginComponent {
         this.loading = false;
         this.submitted = false;
         this.isError = false;
-        this.showAlert = false;
         if (this.accountService.getUserInfo) {
             this.router.navigate(['/']);
         }
@@ -35,12 +34,10 @@ let LoginComponent = class LoginComponent {
             .pipe(first())
             .subscribe(data => {
             this.router.navigate([this.returnUrl]);
-            this.showAlert = true;
         }, error => {
             this.isError = true;
             this.errorMsg = error.error.message;
             this.loading = false;
-            this.showAlert = true;
         });
     }
     onKeyUpEvent(event) {

@@ -9,45 +9,45 @@ import { Router } from '@angular/router';
 @Injectable()
 export class AccountService {
 
-  private userSubject: BehaviorSubject<User>;
-  public user: Observable<User>;
+    private userSubject: BehaviorSubject<User>;
+    public user: Observable<User>;
 
-  constructor(
-    private router: Router,
-    private _http: HttpClient
-  ) {
-    this.userSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')));
-    this.user = this.userSubject.asObservable();
-  }
+    constructor(
+        private router: Router,
+        private _http: HttpClient
+    ) {
+        this.userSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')));
+        this.user = this.userSubject.asObservable();
+    }
 
-  setUserInfo(user: User) {
-    localStorage.setItem('user', JSON.stringify(user));
-  }
-
-  public get getUserInfo(): User {
-    return this.userSubject.value;
-  }
-
-  getUserDetail(userEmail: string) {
-    return this._http.get<User>(`${window.location.origin}/users/${userEmail}`);
-  }
-
-  login(userEmail: string) {
-      return this._http.post<User>(`${window.location.origin}/users/authenticate?email=${userEmail}`, {})
-      .pipe(map(user => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
+    setUserInfo(user: User) {
         localStorage.setItem('user', JSON.stringify(user));
-        this.userSubject.next(user);
-        return user;
-      }));
-  }
+    }
 
-  register(user: User) {
-    return this._http.post(`${window.location.origin}/users/register`, user);
-  }
+    public get getUserInfo(): User {
+        return this.userSubject.value;
+    }
 
-  logout() {
-    localStorage.removeItem('user');
-    this.userSubject.next(null);
-  }
+    getUserDetail(userEmail: string) {
+        return this._http.get<User>(`${window.location.origin}/users/${userEmail}`);
+    }
+
+    login(userEmail: string) {
+        return this._http.post<User>(`${window.location.origin}/users/authenticate?email=${userEmail}`, {})
+            .pipe(map(user => {
+                // store user details and jwt token in local storage to keep user logged in between page refreshes
+                localStorage.setItem('user', JSON.stringify(user));
+                this.userSubject.next(user);
+                return user;
+            }));
+    }
+
+    register(user: User) {
+        return this._http.post(`${window.location.origin}/users/register`, user);
+    }
+
+    logout() {
+        localStorage.removeItem('user');
+        this.userSubject.next(null);
+    }
 }

@@ -1,27 +1,30 @@
 <div class="row d-flex justify-content-center mt-5" style="height:500px;">
-  <div class="col-2 pt-3 border">
-    <div class="d-flex mb-2">
-      <div class="position-relative w-12 h-12">
-        <img class="rounded-full border border-gray-100 shadow-sm" src="avatar.png" alt="user image" />
-        <div class="absolute top-0 right-0 h-3 w-3 my-1 border-2 border-white rounded-full bg-green-400 z-2"></div>
-      </div>
-      <span class="align-self-center ml-2 text-muted h6">Rakib</span>
+    <div class="col-2 pt-3 border">
+        <div class="d-flex mb-2">
+            <div class="position-relative w-12 h-12">
+                <img class="rounded-full border border-gray-100 shadow-sm" src="avatar.png" alt="user image" />
+                <div class="absolute top-0 right-0 h-3 w-3 my-1 border-2 border-white rounded-full bg-green-400 z-2"></div>
+            </div>
+            <span class="align-self-center ml-2 text-muted h6">Rakib</span>
+        </div>
+        <div class="d-flex mb-2">
+            <div class="position-relative w-12 h-12">
+                <img class="rounded-full border border-gray-100 shadow-sm" src="avatar.png" alt="user image" />
+                <div class="absolute top-0 right-0 h-3 w-3 my-1 border-2 border-white rounded-full bg-green-400 z-2"></div>
+            </div>
+            <span class="align-self-center ml-2 text-muted h6">Afnan</span>
+        </div>
     </div>
-    <div class="d-flex mb-2">
-      <div class="position-relative w-12 h-12">
-        <img class="rounded-full border border-gray-100 shadow-sm" src="avatar.png" alt="user image" />
-        <div class="absolute top-0 right-0 h-3 w-3 my-1 border-2 border-white rounded-full bg-green-400 z-2"></div>
-      </div>
-      <span class="align-self-center ml-2 text-muted h6">Afnan</span>
+    <div class="col-6 border border-left-0">
+        <div class="row border-bottom" style="height:450px;">sdf</div>
+        <div class="row pt-1">
+            <div class="col pr-0">
+                <input class="form-control" type="text" [value]="txtMessage" (input)="txtMessage=$event.target.value"
+                       (keydown.enter)="sendMessage()" placeholder="Type a message" />
+            </div>
+            <button type="button" (click)="sendMessage()" class="btn btn-primary mr-2">Send</button>
+        </div>
     </div>
-  </div>
-  <div class="col-6 border border-left-0">
-    <div class="row border-bottom" style="height:450px;">sdf</div>
-    <div class="row pt-1">
-      <div class="col pr-0"><input class="form-control" type="text" placeholder="Aa"/></div>
-      <button type="submit" class="btn btn-primary mr-2">Send</button>
-    </div>
-  </div>
 </div>
 <!--<div class="row mt-3">
   <div class="col-sm-2 pr-0">
@@ -47,8 +50,8 @@
       </div>
     </div>
   </div>
-</div>-->
-<!--<div class="container">
+</div>
+<div class="container">
   <h3 class=" text-center chat_header">Chat Application</h3>
   <div class="messaging">
     <div class="inbox_msg">

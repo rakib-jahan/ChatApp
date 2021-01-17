@@ -6,16 +6,16 @@ let ChatService = class ChatService {
         this.messageReceived = new EventEmitter();
         this.connectionEstablished = new EventEmitter();
         this.connectionIsEstablished = false;
-        //this.createConnection();  
-        //this.registerOnServerEvents();  
-        //this.startConnection();  
+        this.createConnection();
+        this.registerOnServerEvents();
+        this.startConnection();
     }
     sendMessage(message) {
         this._hubConnection.invoke('NewMessage', message);
     }
     createConnection() {
         this._hubConnection = new HubConnectionBuilder()
-            .withUrl(window.location.href + 'MessageHub')
+            .withUrl(`${window.location.origin}/MessageHub`)
             .build();
     }
     startConnection() {

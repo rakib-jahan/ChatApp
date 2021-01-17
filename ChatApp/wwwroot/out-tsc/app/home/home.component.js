@@ -12,12 +12,12 @@ let HomeComponent = class HomeComponent {
         this.uniqueID = new Date().getTime().toString();
         this.messages = new Array();
         this.message = new Message();
-        //this.subscribeToEvents();
-        if (this.accountService.getUserInfo) {
-            this.router.navigate(['/']);
+        if (!this.accountService.getUserInfo) {
+            //this.router.navigate(['/']);
+            this.router.navigate(['/login']);
         }
         else
-            this.router.navigate(['/login']);
+            this.subscribeToEvents();
     }
     ngOnInit() {
     }
