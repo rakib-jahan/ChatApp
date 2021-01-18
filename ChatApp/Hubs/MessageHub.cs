@@ -9,12 +9,39 @@ namespace ChatApp.Hubs
 {
     public class MessageHub : Hub
     {
-        private readonly static HashSet<string> _connections = new HashSet<string>();
-        //public override async Task OnConnectedAsync()
-        //{
-        //    await Clients.All.SendAsync("UserConnected", Context.ConnectionId);
-        //    await base.OnConnectedAsync();
-        //}
+        private readonly Dictionary<string, string> _connections = new Dictionary<string, string>();
+        public override async Task OnConnectedAsync()
+        {
+            //var httpContext = Context.GetHttpContext();
+
+            //if (httpContext == null)
+            //    throw new Exception("...");
+
+            //var email = httpContext.Request.Query["email"].ToString();
+
+            //_connections.Add(Context.ConnectionId, email);
+
+            //await Clients.All.SendAsync("UpdateUserList", _connections);
+            //await base.OnConnectedAsync();
+
+            var httpContext = Context.GetHttpContext();
+
+            if (httpContext != null)
+            {
+                try
+                {
+                    var userName = httpContext.Request.Query["email"].ToString();
+                    var connId = Context.ConnectionId.ToString();
+
+                    _connections.Add(userName, connId);
+
+                    await Clients.All.SendAsync("UpdateUserList", _connections);
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
 
         public async Task NewMessage(Message msg)
         {
@@ -31,5 +58,18 @@ namespace ChatApp.Hubs
         //    await Clients.All.SendAsync("UserDisconnected", Context.ConnectionId);
         //    await base.OnDisconnectedAsync(exception);
         //}
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            var httpContext = Context.GetHttpContext();
+
+            if (httpContext != null)
+            {
+                var userName = httpContext.Request.Query["email"].ToString();
+                _connections.Remove(userName);
+
+                await Clients.All.SendAsync("UpdateUserList", _connections);
+            }
+        }
     }
 }

@@ -1,9 +1,11 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Inject, Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { Message } from '../models/message';
+import { AccountService } from './account.service';
 
 @Injectable()
 export class ChatService {
+
     messageReceived = new EventEmitter<Message>();
     connectionEstablished = new EventEmitter<Boolean>();
     userConnected = new EventEmitter<string>();
@@ -20,11 +22,12 @@ export class ChatService {
 
     sendMessage(message: Message) {
         this._hubConnection.invoke('NewMessage', message);
-    }   
+    }
 
     private createConnection() {
+        var email = 'rakib@gmail.com';
         this._hubConnection = new HubConnectionBuilder()
-            .withUrl(`${window.location.origin}/MessageHub`)
+            .withUrl(`${window.location.origin}/MessageHub?email=${email}`)
             .build();
     }
 
@@ -48,10 +51,9 @@ export class ChatService {
             this.messageReceived.emit(data);
         });
 
-        //this._hubConnection.on('UserConnected', (data: any) => {
-        //    console.log('UserConnected : ' + data);
-        //    this.userConnected.emit(data);
-        //});
+        this._hubConnection.on('UserConnected', (data: any) => {
+            this.userConnected.emit(data);
+        });
 
         //this._hubConnection.on('UserDisconnected', (data: any) => {
         //    console.log('UserDisconnected : ' + data);

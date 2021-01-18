@@ -615,7 +615,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HomeComponent", function() { return HomeComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "../node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
 /* harmony import */ var _models_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/message */ "./app/models/message.ts");
-/* harmony import */ var _services_chat_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/chat.service */ "./app/services/chat.service.ts");
+/* harmony import */ var _aspnet_signalr__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @aspnet/signalr */ "../node_modules/@aspnet/signalr/dist/esm/index.js");
 /* harmony import */ var _services_account_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/account.service */ "./app/services/account.service.ts");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ "../node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/common */ "../node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
@@ -665,9 +665,10 @@ function HomeComponent_div_16_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r1.type == "sent");
 } }
 class HomeComponent {
-    constructor(chatService, _ngZone, accountService, router) {
-        this.chatService = chatService;
-        this._ngZone = _ngZone;
+    constructor(
+    //private chatService: ChatService,
+    //private _ngZone: NgZone,
+    accountService, router) {
         this.accountService = accountService;
         this.router = router;
         this.title = 'ClientApp';
@@ -681,7 +682,8 @@ class HomeComponent {
         }
     }
     ngOnInit() {
-        this.subscribeToEvents();
+        //this.subscribeToEvents();
+        this.signalrConn();
     }
     //logout() {
     //    this.chatService.destroyConnection();
@@ -696,30 +698,67 @@ class HomeComponent {
             this.message.message = this.txtMessage;
             this.message.date = new Date();
             this.messages.push(this.message);
-            this.chatService.sendMessage(this.message);
+            //this.chatService.sendMessage(this.message);
             this.txtMessage = '';
         }
     }
-    ngOnDestroy() {
-        //this.chatService.destroyConnection();
-    }
     subscribeToEvents() {
-        this.chatService.messageReceived.subscribe((message) => {
-            this._ngZone.run(() => {
-                if (message.clientuniqueid !== this.uniqueID) {
-                    message.type = "received";
-                    this.messages.push(message);
-                }
-            });
-        });
-        //this.chatService.userConnected.subscribe((connectionId: string) => {
-        //    this.user.connectionId = connectionId;
+        //this.chatService.messageReceived.subscribe((message: Message) => {
+        //    this._ngZone.run(() => {
+        //        if (message.clientuniqueid !== this.uniqueID) {
+        //            message.type = "received";
+        //            this.messages.push(message);
+        //        }
+        //    });
+        //});
+        //this.chatService.userConnected.subscribe((connections: any[]) => {
+        //    debugger;
         //});
         //this.chatService.userDisconnected.subscribe((connectionId: string) => {
         //});
     }
+    signalrConn() {
+        this._hubConnection = new _aspnet_signalr__WEBPACK_IMPORTED_MODULE_2__["HubConnectionBuilder"]()
+            .withUrl(`${window.location.origin}/MessageHub?email=${this.user.email}`)
+            .build();
+        //Call client methods from hub to update User
+        this._hubConnection.on('UpdateUserList', (onlineuser) => {
+            var users = JSON.parse(JSON.stringify(onlineuser));
+            this.onlineUser = [];
+            for (var key in users) {
+                if (users.hasOwnProperty(key)) {
+                    if (key !== this.user.email) {
+                        this.onlineUser.push({
+                            userName: key,
+                            connection: users[key]
+                        });
+                    }
+                }
+            }
+        });
+        this._hubConnection.on('MessageReceived', (data) => {
+        });
+        //Start Connection
+        this._hubConnection
+            .start()
+            .then(function () {
+            console.log("Connected");
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+    ngOnDestroy() {
+        //Stop Connection
+        //this._hubConnection
+        //    .stop()
+        //    .then(function () {
+        //        console.log("Stopped");
+        //    }).catch(function (err) {
+        //        return console.error(err.toString());
+        //    });
+    }
 }
-HomeComponent.ɵfac = function HomeComponent_Factory(t) { return new (t || HomeComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_chat_service__WEBPACK_IMPORTED_MODULE_2__["ChatService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"])); };
+HomeComponent.ɵfac = function HomeComponent_Factory(t) { return new (t || HomeComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"])); };
 HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: HomeComponent, selectors: [["ng-component"]], decls: 22, vars: 2, consts: [[1, "row", "d-flex", "justify-content-center", "mt-5", 2, "height", "500px"], [1, "col-2", "pt-3", "border"], [1, "d-flex", "mb-2"], [1, "position-relative", "w-12", "h-12"], ["src", "avatar.png", "alt", "user image", 1, "rounded-full", "border", "border-gray-100", "shadow-sm"], [1, "absolute", "top-0", "right-0", "h-3", "w-3", "my-1", "border-2", "border-white", "rounded-full", "bg-green-400", "z-2"], [1, "align-self-center", "ml-2", "text-muted", "h6"], [1, "col-6", "border", "border-left-0"], [1, "pt-3", 2, "height", "450px"], [4, "ngFor", "ngForOf"], [1, "row", "pt-1"], [1, "col", "pr-0"], ["type", "text", "placeholder", "Type a message", 1, "form-control", 3, "value", "input", "keydown.enter"], ["type", "button", 1, "btn", "btn-primary", "mr-2", 3, "click"], ["class", "row", 4, "ngIf"], [1, "row"], [1, "col"], [1, "alert", "alert-warning", "float-left"], [1, "alert", "alert-info", "float-right"]], template: function HomeComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
@@ -771,7 +810,7 @@ HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComp
                 templateUrl: 'home.component.html',
                 styleUrls: ['home.component.css']
             }]
-    }], function () { return [{ type: _services_chat_service__WEBPACK_IMPORTED_MODULE_2__["ChatService"] }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgZone"] }, { type: _services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"] }]; }, null); })();
+    }], function () { return [{ type: _services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"] }]; }, null); })();
 
 
 /***/ }),
@@ -885,8 +924,9 @@ class ChatService {
         this._hubConnection.invoke('NewMessage', message);
     }
     createConnection() {
+        var email = 'rakib@gmail.com';
         this._hubConnection = new _aspnet_signalr__WEBPACK_IMPORTED_MODULE_1__["HubConnectionBuilder"]()
-            .withUrl(`${window.location.origin}/MessageHub`)
+            .withUrl(`${window.location.origin}/MessageHub?email=${email}`)
             .build();
     }
     startConnection() {
@@ -906,10 +946,9 @@ class ChatService {
         this._hubConnection.on('MessageReceived', (data) => {
             this.messageReceived.emit(data);
         });
-        //this._hubConnection.on('UserConnected', (data: any) => {
-        //    console.log('UserConnected : ' + data);
-        //    this.userConnected.emit(data);
-        //});
+        this._hubConnection.on('UserConnected', (data) => {
+            this.userConnected.emit(data);
+        });
         //this._hubConnection.on('UserDisconnected', (data: any) => {
         //    console.log('UserDisconnected : ' + data);
         //    this.userDisconnected.emit(data);

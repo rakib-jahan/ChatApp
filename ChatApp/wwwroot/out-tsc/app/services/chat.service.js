@@ -16,8 +16,9 @@ let ChatService = class ChatService {
         this._hubConnection.invoke('NewMessage', message);
     }
     createConnection() {
+        var email = 'rakib@gmail.com';
         this._hubConnection = new HubConnectionBuilder()
-            .withUrl(`${window.location.origin}/MessageHub`)
+            .withUrl(`${window.location.origin}/MessageHub?email=${email}`)
             .build();
     }
     startConnection() {
@@ -37,10 +38,9 @@ let ChatService = class ChatService {
         this._hubConnection.on('MessageReceived', (data) => {
             this.messageReceived.emit(data);
         });
-        //this._hubConnection.on('UserConnected', (data: any) => {
-        //    console.log('UserConnected : ' + data);
-        //    this.userConnected.emit(data);
-        //});
+        this._hubConnection.on('UserConnected', (data) => {
+            this.userConnected.emit(data);
+        });
         //this._hubConnection.on('UserDisconnected', (data: any) => {
         //    console.log('UserDisconnected : ' + data);
         //    this.userDisconnected.emit(data);
