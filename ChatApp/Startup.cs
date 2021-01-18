@@ -31,10 +31,7 @@ namespace ChatApp
 
             services.AddControllersWithViews();
 
-            services.AddSignalR().AddHubOptions<MessageHub>(options =>
-            {
-                options.EnableDetailedErrors = true;
-            });
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,12 +64,7 @@ namespace ChatApp
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<MessageHub>("/MessageHub", options =>
-                {
-                    options.Transports =
-                        HttpTransportType.WebSockets |
-                        HttpTransportType.LongPolling;
-                });
+                endpoints.MapHub<MessageHub>("/MessageHub");
 
                 endpoints.MapControllerRoute(
                    name: "default",

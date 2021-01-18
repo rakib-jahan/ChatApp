@@ -6,6 +6,8 @@ import { Message } from '../models/message';
 export class ChatService {
     messageReceived = new EventEmitter<Message>();
     connectionEstablished = new EventEmitter<Boolean>();
+    userConnected = new EventEmitter<string>();
+    userDisconnected = new EventEmitter<string>();
 
     private connectionIsEstablished = false;
     private _hubConnection!: HubConnection;
@@ -18,7 +20,7 @@ export class ChatService {
 
     sendMessage(message: Message) {
         this._hubConnection.invoke('NewMessage', message);
-    }
+    }   
 
     private createConnection() {
         this._hubConnection = new HubConnectionBuilder()
@@ -41,8 +43,29 @@ export class ChatService {
     }
 
     private registerOnServerEvents(): void {
+
         this._hubConnection.on('MessageReceived', (data: any) => {
             this.messageReceived.emit(data);
         });
+
+        this._hubConnection.on('UserConnected', (data: any) => {
+            console.log('UserConnected : ' + data);
+            this.userConnected.emit(data);
+        });
+
+        this._hubConnection.on('UserDisconnected', (data: any) => {
+            console.log('UserDisconnected : ' + data);
+            this.userDisconnected.emit(data);
+        });
+    }
+
+    destroyConnection() {
+        this._hubConnection
+            .stop()
+            .then(function () {
+                console.log("Stopped");
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
     }
 }

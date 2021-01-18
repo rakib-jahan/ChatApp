@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Message } from '../models/message';
 import { ChatService } from '../services/chat.service';
 import { AccountService } from '../services/account.service';
+import { User } from '../models/user';
 
 @Component({
     templateUrl: 'home.component.html',
@@ -16,21 +17,30 @@ export class HomeComponent implements OnInit {
     messages = new Array<Message>();
     message = new Message();
 
+    user: User;
+
     constructor(
         private chatService: ChatService,
         private _ngZone: NgZone,
         private accountService: AccountService,
         private router: Router,
     ) {
-        if (!this.accountService.getUserInfo) {
-            //this.router.navigate(['/']);
+        this.user = this.accountService.getUserInfo;
+
+        if (!this.user) {
             this.router.navigate(['/login']);
         }
         else
             this.subscribeToEvents();
     }
 
-    ngOnInit(): void {
+    ngOnInit(): void {        
+    }
+
+    logout() {
+        this.chatService.destroyConnection();
+        this.accountService.logout();
+        this.router.navigate(['./login']);
     }
 
     sendMessage(): void {
@@ -46,7 +56,12 @@ export class HomeComponent implements OnInit {
         }
     }
 
+    ngOnDestroy() {
+        //this.chatService.destroyConnection();
+    }
+
     private subscribeToEvents(): void {
+
         this.chatService.messageReceived.subscribe((message: Message) => {
             this._ngZone.run(() => {
                 if (message.clientuniqueid !== this.uniqueID) {
@@ -54,6 +69,14 @@ export class HomeComponent implements OnInit {
                     this.messages.push(message);
                 }
             });
+        });
+
+        this.chatService.userConnected.subscribe((connectionId: string) => {
+            this.user.connectionId = connectionId;
+        });
+
+        this.chatService.userDisconnected.subscribe((connectionId: string) => {
+            
         });
     }
 

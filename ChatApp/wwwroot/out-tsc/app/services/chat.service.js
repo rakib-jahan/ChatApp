@@ -5,6 +5,8 @@ let ChatService = class ChatService {
     constructor() {
         this.messageReceived = new EventEmitter();
         this.connectionEstablished = new EventEmitter();
+        this.userConnected = new EventEmitter();
+        this.userDisconnected = new EventEmitter();
         this.connectionIsEstablished = false;
         this.createConnection();
         this.registerOnServerEvents();
@@ -34,6 +36,23 @@ let ChatService = class ChatService {
     registerOnServerEvents() {
         this._hubConnection.on('MessageReceived', (data) => {
             this.messageReceived.emit(data);
+        });
+        this._hubConnection.on('UserConnected', (data) => {
+            console.log('UserConnected : ' + data);
+            this.userConnected.emit(data);
+        });
+        this._hubConnection.on('UserDisconnected', (data) => {
+            console.log('UserDisconnected : ' + data);
+            this.userDisconnected.emit(data);
+        });
+    }
+    destroyConnection() {
+        this._hubConnection
+            .stop()
+            .then(function () {
+            console.log("Stopped");
+        }).catch(function (err) {
+            return console.error(err.toString());
         });
     }
 };

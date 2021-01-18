@@ -12,14 +12,19 @@ let HomeComponent = class HomeComponent {
         this.uniqueID = new Date().getTime().toString();
         this.messages = new Array();
         this.message = new Message();
-        if (!this.accountService.getUserInfo) {
-            //this.router.navigate(['/']);
+        this.user = this.accountService.getUserInfo;
+        if (!this.user) {
             this.router.navigate(['/login']);
         }
         else
             this.subscribeToEvents();
     }
     ngOnInit() {
+    }
+    logout() {
+        this.chatService.destroyConnection();
+        this.accountService.logout();
+        this.router.navigate(['./login']);
     }
     sendMessage() {
         if (this.txtMessage) {
@@ -33,6 +38,9 @@ let HomeComponent = class HomeComponent {
             this.txtMessage = '';
         }
     }
+    ngOnDestroy() {
+        //this.chatService.destroyConnection();
+    }
     subscribeToEvents() {
         this.chatService.messageReceived.subscribe((message) => {
             this._ngZone.run(() => {
@@ -41,6 +49,11 @@ let HomeComponent = class HomeComponent {
                     this.messages.push(message);
                 }
             });
+        });
+        this.chatService.userConnected.subscribe((connectionId) => {
+            this.user.connectionId = connectionId;
+        });
+        this.chatService.userDisconnected.subscribe((connectionId) => {
         });
     }
 };

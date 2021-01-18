@@ -1,3 +1,4 @@
+<button (click)="logout()" type="button" class="btn btn-outline-info btn-sm ml-2">Logout</button>
 <div class="row d-flex justify-content-center mt-5" style="height:500px;">
     <div class="col-2 pt-3 border">
         <div class="d-flex mb-2">
@@ -16,7 +17,34 @@
         </div>
     </div>
     <div class="col-6 border border-left-0">
-        <div class="row border-bottom" style="height:450px;">sdf</div>
+        <div class="row border-bottom" style="height:450px;">
+
+            <div class="msg_history">
+                <div *ngFor="let msg of messages">
+                    <div class="incoming_msg" *ngIf="msg.type == 'received'">
+                        <div class="incoming_msg_img"> </div>
+                        <div class="received_msg">
+                            <div class="received_withd_msg">
+                                <p>
+                                    {{msg.message}}
+                                </p>
+                                <span class="time_date"> {{msg.date | date:'medium'}} </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="outgoing_msg" *ngIf="msg.type == 'sent'">
+                        <div class="sent_msg">
+                            <p>
+                                {{msg.message}}
+                            </p>
+                            <span class="time_date"> {{msg.date | date:'medium'}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
         <div class="row pt-1">
             <div class="col pr-0">
                 <input class="form-control" type="text" [value]="txtMessage" (input)="txtMessage=$event.target.value"
