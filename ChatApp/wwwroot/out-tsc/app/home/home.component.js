@@ -16,16 +16,15 @@ let HomeComponent = class HomeComponent {
         if (!this.user) {
             this.router.navigate(['/login']);
         }
-        else
-            this.subscribeToEvents();
     }
     ngOnInit() {
+        this.subscribeToEvents();
     }
-    logout() {
-        this.chatService.destroyConnection();
-        this.accountService.logout();
-        this.router.navigate(['./login']);
-    }
+    //logout() {
+    //    this.chatService.destroyConnection();
+    //    this.accountService.logout();
+    //    this.router.navigate(['./login']);
+    //}
     sendMessage() {
         if (this.txtMessage) {
             this.message = new Message();
@@ -50,11 +49,11 @@ let HomeComponent = class HomeComponent {
                 }
             });
         });
-        this.chatService.userConnected.subscribe((connectionId) => {
-            this.user.connectionId = connectionId;
-        });
-        this.chatService.userDisconnected.subscribe((connectionId) => {
-        });
+        //this.chatService.userConnected.subscribe((connectionId: string) => {
+        //    this.user.connectionId = connectionId;
+        //});
+        //this.chatService.userDisconnected.subscribe((connectionId: string) => {
+        //});
     }
 };
 HomeComponent = __decorate([

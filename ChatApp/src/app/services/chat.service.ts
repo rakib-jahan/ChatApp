@@ -48,15 +48,15 @@ export class ChatService {
             this.messageReceived.emit(data);
         });
 
-        this._hubConnection.on('UserConnected', (data: any) => {
-            console.log('UserConnected : ' + data);
-            this.userConnected.emit(data);
-        });
+        //this._hubConnection.on('UserConnected', (data: any) => {
+        //    console.log('UserConnected : ' + data);
+        //    this.userConnected.emit(data);
+        //});
 
-        this._hubConnection.on('UserDisconnected', (data: any) => {
-            console.log('UserDisconnected : ' + data);
-            this.userDisconnected.emit(data);
-        });
+        //this._hubConnection.on('UserDisconnected', (data: any) => {
+        //    console.log('UserDisconnected : ' + data);
+        //    this.userDisconnected.emit(data);
+        //});
     }
 
     destroyConnection() {

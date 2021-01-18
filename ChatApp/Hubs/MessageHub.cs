@@ -10,11 +10,11 @@ namespace ChatApp.Hubs
     public class MessageHub : Hub
     {
         private readonly static HashSet<string> _connections = new HashSet<string>();
-        public override async Task OnConnectedAsync()
-        {
-            await Clients.All.SendAsync("UserConnected", Context.ConnectionId);
-            await base.OnConnectedAsync();
-        }
+        //public override async Task OnConnectedAsync()
+        //{
+        //    await Clients.All.SendAsync("UserConnected", Context.ConnectionId);
+        //    await base.OnConnectedAsync();
+        //}
 
         public async Task NewMessage(Message msg)
         {
@@ -26,10 +26,10 @@ namespace ChatApp.Hubs
             await Clients.Client(connectionId).SendAsync("ReceivedMessage", msg);
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
-        {
-            await Clients.All.SendAsync("UserDisconnected", Context.ConnectionId);
-            await base.OnDisconnectedAsync(exception);
-        }
+        //public override async Task OnDisconnectedAsync(Exception exception)
+        //{
+        //    await Clients.All.SendAsync("UserDisconnected", Context.ConnectionId);
+        //    await base.OnDisconnectedAsync(exception);
+        //}
     }
 }

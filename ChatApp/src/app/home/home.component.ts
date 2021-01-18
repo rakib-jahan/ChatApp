@@ -29,19 +29,18 @@ export class HomeComponent implements OnInit {
 
         if (!this.user) {
             this.router.navigate(['/login']);
-        }
-        else
-            this.subscribeToEvents();
+        }            
     }
 
-    ngOnInit(): void {        
+    ngOnInit(): void {    
+        this.subscribeToEvents();
     }
 
-    logout() {
-        this.chatService.destroyConnection();
-        this.accountService.logout();
-        this.router.navigate(['./login']);
-    }
+    //logout() {
+    //    this.chatService.destroyConnection();
+    //    this.accountService.logout();
+    //    this.router.navigate(['./login']);
+    //}
 
     sendMessage(): void {
         if (this.txtMessage) {
@@ -71,13 +70,13 @@ export class HomeComponent implements OnInit {
             });
         });
 
-        this.chatService.userConnected.subscribe((connectionId: string) => {
-            this.user.connectionId = connectionId;
-        });
+        //this.chatService.userConnected.subscribe((connectionId: string) => {
+        //    this.user.connectionId = connectionId;
+        //});
 
-        this.chatService.userDisconnected.subscribe((connectionId: string) => {
+        //this.chatService.userDisconnected.subscribe((connectionId: string) => {
             
-        });
+        //});
     }
 
 }
