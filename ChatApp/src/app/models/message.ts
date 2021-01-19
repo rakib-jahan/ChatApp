@@ -1,6 +1,7 @@
 export class Message {
-  clientuniqueid: string;
-  type: string;
-  message: string;
-  date: Date;
+    senderConnectionId: string;
+    receiverConnectionId: string;
+    type: string;
+    message: string;
+    date: Date;
 }

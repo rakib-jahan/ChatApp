@@ -46,9 +46,9 @@ namespace ChatApp.Hubs
             await Clients.All.SendAsync("MessageReceived", msg);
         }
 
-        public async Task SendMessageToUser(string connectionId, string msg)
+        public async Task SendMessageToUser(Message msg)
         {
-            await Clients.Client(connectionId).SendAsync("ReceivedMessage", msg);
+            await Clients.Client(msg.receiverConnectionId).SendAsync("ReceivedMessage", msg);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)

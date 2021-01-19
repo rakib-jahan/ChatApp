@@ -3,10 +3,7 @@ import { Component } from '@angular/core';
 import { Message } from '../models/message';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 let HomeComponent = class HomeComponent {
-    constructor(
-    //private chatService: ChatService,
-    //private _ngZone: NgZone,
-    accountService, router) {
+    constructor(accountService, router) {
         this.accountService = accountService;
         this.router = router;
         this.title = 'ClientApp';
@@ -21,40 +18,24 @@ let HomeComponent = class HomeComponent {
         }
     }
     ngOnInit() {
-        //this.subscribeToEvents();
         this.signalrConn();
     }
-    //logout() {
-    //    this.chatService.destroyConnection();
-    //    this.accountService.logout();
-    //    this.router.navigate(['./login']);
-    //}
     sendMessage() {
         if (this.txtMessage) {
             this.message = new Message();
-            this.message.clientuniqueid = this.uniqueID;
+            this.message.senderConnectionId = this.user.connectionId;
+            this.message.receiverConnectionId = this.chatUser.connectionId;
             this.message.type = "sent";
             this.message.message = this.txtMessage;
             this.message.date = new Date();
             this.messages.push(this.message);
-            //this.chatService.sendMessage(this.message);
+            this._hubConnection.invoke('SendMessageToUser', this.message);
             this.txtMessage = '';
         }
     }
-    subscribeToEvents() {
-        //this.chatService.messageReceived.subscribe((message: Message) => {
-        //    this._ngZone.run(() => {
-        //        if (message.clientuniqueid !== this.uniqueID) {
-        //            message.type = "received";
-        //            this.messages.push(message);
-        //        }
-        //    });
-        //});
-        //this.chatService.userConnected.subscribe((connections: any[]) => {
-        //    debugger;
-        //});
-        //this.chatService.userDisconnected.subscribe((connectionId: string) => {
-        //});
+    selectUser(user) {
+        this.chatUser = user;
+        //this.chatLog();
     }
     signalrConn() {
         this._hubConnection = new HubConnectionBuilder()
@@ -63,12 +44,18 @@ let HomeComponent = class HomeComponent {
         this._hubConnection.on('UpdateUserList', (onlineuser) => {
             var users = JSON.parse(JSON.stringify(onlineuser));
             users.forEach((user) => {
-                if (user.email !== this.user.email) {
+                if (user.email !== this.user.email && !this.onlineUser.some(r => r.email === user.email)) {
                     this.onlineUser.push(user);
+                }
+                else {
+                    this.user.connectionId = user.connectionId;
+                    this.user.isConnected = user.isConnected;
                 }
             });
         });
-        this._hubConnection.on('MessageReceived', (data) => {
+        this._hubConnection.on('ReceivedMessage', (message) => {
+            message.type = "received";
+            this.messages.push(message);
         });
         this._hubConnection
             .start()
@@ -79,7 +66,6 @@ let HomeComponent = class HomeComponent {
         });
     }
     ngOnDestroy() {
-        debugger;
         if (this._hubConnection)
             this._hubConnection
                 .stop()

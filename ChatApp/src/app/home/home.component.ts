@@ -19,65 +19,39 @@ export class HomeComponent implements OnInit, OnDestroy {
     message = new Message();
 
     user: User;
+    chatUser: User;
     onlineUser = Array<User>();
 
     private _hubConnection: HubConnection;
 
-    constructor(
-        //private chatService: ChatService,
-        //private _ngZone: NgZone,
-        private accountService: AccountService,
-        private router: Router,
-    ) {
+    constructor(private accountService: AccountService, private router: Router) {
         this.user = this.accountService.getUserInfo;
-
         if (!this.user) {
             this.router.navigate(['/login']);
         }
     }
 
     ngOnInit(): void {
-        //this.subscribeToEvents();
         this.signalrConn();
     }
-
-    //logout() {
-    //    this.chatService.destroyConnection();
-    //    this.accountService.logout();
-    //    this.router.navigate(['./login']);
-    //}
 
     sendMessage(): void {
         if (this.txtMessage) {
             this.message = new Message();
-            this.message.clientuniqueid = this.uniqueID;
+            this.message.senderConnectionId = this.user.connectionId;
+            this.message.receiverConnectionId = this.chatUser.connectionId;
             this.message.type = "sent";
             this.message.message = this.txtMessage;
             this.message.date = new Date();
             this.messages.push(this.message);
-            //this.chatService.sendMessage(this.message);
+            this._hubConnection.invoke('SendMessageToUser', this.message);
             this.txtMessage = '';
         }
     }
 
-    private subscribeToEvents(): void {
-
-        //this.chatService.messageReceived.subscribe((message: Message) => {
-        //    this._ngZone.run(() => {
-        //        if (message.clientuniqueid !== this.uniqueID) {
-        //            message.type = "received";
-        //            this.messages.push(message);
-        //        }
-        //    });
-        //});
-
-        //this.chatService.userConnected.subscribe((connections: any[]) => {
-        //    debugger;
-        //});
-
-        //this.chatService.userDisconnected.subscribe((connectionId: string) => {
-
-        //});
+    selectUser(user) {
+        this.chatUser = user;
+        //this.chatLog();
     }
 
     signalrConn() {
@@ -89,14 +63,19 @@ export class HomeComponent implements OnInit, OnDestroy {
         this._hubConnection.on('UpdateUserList', (onlineuser) => {
             var users = JSON.parse(JSON.stringify(onlineuser));
             users.forEach((user: User) => {
-                if (user.email !== this.user.email) {
+                if (user.email !== this.user.email && !this.onlineUser.some(r => r.email === user.email)) {
                     this.onlineUser.push(user);
+                }
+                else {
+                    this.user.connectionId = user.connectionId;
+                    this.user.isConnected = user.isConnected;
                 }
             });
         });
 
-        this._hubConnection.on('MessageReceived', (data: any) => {
-
+        this._hubConnection.on('ReceivedMessage', (message: Message) => {
+            message.type = "received";
+            this.messages.push(message);
         });
 
         this._hubConnection
@@ -109,7 +88,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        debugger;
         if (this._hubConnection)
             this._hubConnection
                 .stop()

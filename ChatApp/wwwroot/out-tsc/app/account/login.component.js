@@ -17,7 +17,7 @@ let LoginComponent = class LoginComponent {
     }
     ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            userEmail: ['rakib@gmail.com', [Validators.required, Validators.email]]
+            userEmail: ['a@gmail.com', [Validators.required, Validators.email]]
         });
         // get return url from route parameters or default to '/'
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
