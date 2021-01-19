@@ -10,5 +10,6 @@ namespace ChatApp.Repository
     {
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
         void Create(T entity);
+        void Update(T entity);
     }
 }

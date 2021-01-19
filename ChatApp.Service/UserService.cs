@@ -1,6 +1,7 @@
 ﻿using ChatApp.Model;
 using ChatApp.Repository;
 using ChatApp.Repository.Entity;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ChatApp.Service
@@ -24,7 +25,50 @@ namespace ChatApp.Service
                     Id = user.Id,
                     Email = user.Email,
                     FirstName = user.FirstName,
-                    LastName = user.LastName
+                    LastName = user.LastName,
+                    ConnectionId = user.ConnectionId,
+                    IsConnected = user.IsConnected
+                };
+            }
+            else
+                return null;
+        }
+
+        public List<UserViewModel> GetAllConnectedUsers()
+        {
+            var connectedUsers = new List<UserViewModel>();
+            var users = _repository.FindByCondition(x => x.IsConnected.Equals(true));
+
+            foreach (var u in users)
+            {
+                connectedUsers.Add(new UserViewModel()
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    IsConnected = u.IsConnected,
+                    ConnectionId = u.ConnectionId
+                });
+            }
+
+            return connectedUsers;
+        }
+
+        public UserViewModel GetUserById(int id)
+        {
+            var user = _repository.FindByCondition(x => x.Id.Equals(id)).FirstOrDefault();
+
+            if (user != null)
+            {
+                return new UserViewModel()
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    ConnectionId = user.ConnectionId,
+                    IsConnected = user.IsConnected
                 };
             }
             else
@@ -38,10 +82,26 @@ namespace ChatApp.Service
                 Id = user.Id,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                IsConnected = false
             };
 
             _repository.Create(users);
+        }
+
+        public void UpdateUser(UserViewModel user)
+        {
+            var users = new User()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ConnectionId = user.ConnectionId,
+                IsConnected = user.IsConnected
+            };
+
+            _repository.Update(users);
         }
     }
 }

@@ -14,6 +14,7 @@ let HomeComponent = class HomeComponent {
         this.uniqueID = new Date().getTime().toString();
         this.messages = new Array();
         this.message = new Message();
+        this.onlineUser = Array();
         this.user = this.accountService.getUserInfo;
         if (!this.user) {
             this.router.navigate(['/login']);
@@ -59,24 +60,16 @@ let HomeComponent = class HomeComponent {
         this._hubConnection = new HubConnectionBuilder()
             .withUrl(`${window.location.origin}/MessageHub?email=${this.user.email}`)
             .build();
-        //Call client methods from hub to update User
         this._hubConnection.on('UpdateUserList', (onlineuser) => {
             var users = JSON.parse(JSON.stringify(onlineuser));
-            this.onlineUser = [];
-            for (var key in users) {
-                if (users.hasOwnProperty(key)) {
-                    if (key !== this.user.email) {
-                        this.onlineUser.push({
-                            userName: key,
-                            connection: users[key]
-                        });
-                    }
+            users.forEach((user) => {
+                if (user.email !== this.user.email) {
+                    this.onlineUser.push(user);
                 }
-            }
+            });
         });
         this._hubConnection.on('MessageReceived', (data) => {
         });
-        //Start Connection
         this._hubConnection
             .start()
             .then(function () {
@@ -86,14 +79,15 @@ let HomeComponent = class HomeComponent {
         });
     }
     ngOnDestroy() {
-        //Stop Connection
-        //this._hubConnection
-        //    .stop()
-        //    .then(function () {
-        //        console.log("Stopped");
-        //    }).catch(function (err) {
-        //        return console.error(err.toString());
-        //    });
+        debugger;
+        if (this._hubConnection)
+            this._hubConnection
+                .stop()
+                .then(function () {
+                console.log("Stopped");
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
     }
 };
 HomeComponent = __decorate([

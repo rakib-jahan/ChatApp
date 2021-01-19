@@ -4,4 +4,5 @@ export class User {
     firstName: string;
     lastName: string;
     connectionId: string;
+    isConnected: boolean;
 }

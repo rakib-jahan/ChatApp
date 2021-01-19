@@ -24,5 +24,14 @@ namespace ChatApp.Repository
             this._context.Set<T>().Add(entity);
             _context.SaveChanges();
         }
+
+        public void Update(T entity)
+        {
+            if (entity != null)
+            {
+                _context.Entry(entity).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
+        }
     }
 }

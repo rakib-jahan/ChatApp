@@ -19,9 +19,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     message = new Message();
 
     user: User;
+    onlineUser = Array<User>();
 
-    private _hubConnection : HubConnection;
-    onlineUser: any[];
+    private _hubConnection: HubConnection;
 
     constructor(
         //private chatService: ChatService,
@@ -86,27 +86,19 @@ export class HomeComponent implements OnInit, OnDestroy {
             .withUrl(`${window.location.origin}/MessageHub?email=${this.user.email}`)
             .build();
 
-        //Call client methods from hub to update User
         this._hubConnection.on('UpdateUserList', (onlineuser) => {
             var users = JSON.parse(JSON.stringify(onlineuser));
-            this.onlineUser = [];
-            for (var key in users) {
-                if (users.hasOwnProperty(key)) {
-                    if (key !== this.user.email) {
-                        this.onlineUser.push({
-                            userName: key,
-                            connection: users[key]
-                        });
-                    }
+            users.forEach((user: User) => {
+                if (user.email !== this.user.email) {
+                    this.onlineUser.push(user);
                 }
-            }
+            });
         });
 
         this._hubConnection.on('MessageReceived', (data: any) => {
-            
+
         });
 
-        //Start Connection
         this._hubConnection
             .start()
             .then(function () {
@@ -117,13 +109,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        //Stop Connection
-        //this._hubConnection
-        //    .stop()
-        //    .then(function () {
-        //        console.log("Stopped");
-        //    }).catch(function (err) {
-        //        return console.error(err.toString());
-        //    });
+        debugger;
+        if (this._hubConnection)
+            this._hubConnection
+                .stop()
+                .then(function () {
+                    console.log("Stopped");
+                }).catch(function (err) {
+                    return console.error(err.toString());
+                });
     }
 }
