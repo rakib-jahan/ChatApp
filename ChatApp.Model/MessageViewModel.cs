@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Model
 {
-    public class Message
+    public class MessageViewModel
     {
+        public int id { get; set; }
+        public int senderId { get; set; }
+        public int receiverId { get; set; }
         public string receiverConnectionId { get; set; }
         public string senderConnectionId { get; set; }
         public string type { get; set; }

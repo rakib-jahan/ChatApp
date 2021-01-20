@@ -12,5 +12,6 @@ namespace ChatApp.Repository
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 
         public DbSet<User> User { get; set; }
+        public DbSet<ChatHistory> ChatHistory { get; set; }        
     }
 }

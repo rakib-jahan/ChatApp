@@ -3,12 +3,12 @@ import { Component } from '@angular/core';
 import { Message } from '../models/message';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 let HomeComponent = class HomeComponent {
-    constructor(accountService, router) {
+    constructor(accountService, chatService, router) {
         this.accountService = accountService;
+        this.chatService = chatService;
         this.router = router;
         this.title = 'ClientApp';
         this.txtMessage = '';
-        this.uniqueID = new Date().getTime().toString();
         this.messages = new Array();
         this.message = new Message();
         this.onlineUser = Array();
@@ -23,6 +23,8 @@ let HomeComponent = class HomeComponent {
     sendMessage() {
         if (this.txtMessage) {
             this.message = new Message();
+            this.message.senderId = this.user.id;
+            this.message.receiverId = this.chatUser.id;
             this.message.senderConnectionId = this.user.connectionId;
             this.message.receiverConnectionId = this.chatUser.connectionId;
             this.message.type = "sent";
@@ -35,7 +37,30 @@ let HomeComponent = class HomeComponent {
     }
     selectUser(user) {
         this.chatUser = user;
-        //this.chatLog();
+        this.chatLog();
+    }
+    chatLog() {
+        this.messages = [];
+        this.chatService.getChatLog(this.user.id, this.chatUser.id)
+            .subscribe(response => {
+            if (response != null) {
+                var chatLog = response;
+                if (chatLog.length > 0) {
+                    this.messages = [];
+                    chatLog.forEach((chat) => {
+                        if (chat.receiverId == this.user.id) {
+                            chat.type = "sent";
+                        }
+                        else {
+                            chat.type = "received";
+                        }
+                        this.messages.push(chat);
+                    });
+                }
+            }
+        }, error => {
+            console.log(error);
+        });
     }
     signalrConn() {
         this._hubConnection = new HubConnectionBuilder()

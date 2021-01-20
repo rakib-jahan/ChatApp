@@ -27,7 +27,8 @@ namespace ChatApp
                 options => options.UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUser, UserService>();
+            services.AddTransient<IChat, UserService>();
 
             services.AddControllersWithViews();
 

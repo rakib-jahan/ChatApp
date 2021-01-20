@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ChatApp.Service
 {
-    public interface IUserService
+    public interface IUser
     {
         UserViewModel GetUserById(int id);
         UserViewModel GetUserByEmail(string email);

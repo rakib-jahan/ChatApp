@@ -8,11 +8,13 @@ namespace ChatApp.Hubs
 {
     public class MessageHub : Hub
     {
-        private readonly IUserService _service;
+        private readonly IUser _userService;
+        private readonly IChat _chatService;
 
-        public MessageHub(IUserService service)
+        public MessageHub(IUser user, IChat chat)
         {
-            _service = service;
+            _userService = user;
+            _chatService = chat;
         }
 
         public override async Task OnConnectedAsync()
@@ -26,14 +28,14 @@ namespace ChatApp.Hubs
                     var userEmail = httpContext.Request.Query["email"].ToString();
                     var connId = Context.ConnectionId.ToString();
 
-                    var user = _service.GetUserByEmail(userEmail);
+                    var user = _userService.GetUserByEmail(userEmail);
 
                     user.IsConnected = true;
                     user.ConnectionId = connId;
 
-                    _service.UpdateUser(user);
+                    _userService.UpdateUser(user);
 
-                    await Clients.All.SendAsync("UpdateUserList", _service.GetAllConnectedUsers());
+                    await Clients.All.SendAsync("UpdateUserList", _userService.GetAllConnectedUsers());
                 }
                 catch (Exception ex)
                 {
@@ -41,13 +43,14 @@ namespace ChatApp.Hubs
             }
         }
 
-        public async Task NewMessage(Message msg)
-        {
-            await Clients.All.SendAsync("MessageReceived", msg);
-        }
+        //public async Task NewMessage(Message msg)
+        //{
+        //    await Clients.All.SendAsync("MessageReceived", msg);
+        //}
 
-        public async Task SendMessageToUser(Message msg)
+        public async Task SendMessageToUser(MessageViewModel msg)
         {
+            _chatService.AddChat(msg);
             await Clients.Client(msg.receiverConnectionId).SendAsync("ReceivedMessage", msg);
         }
 
@@ -63,14 +66,14 @@ namespace ChatApp.Hubs
 
                     var connId = Context.ConnectionId.ToString();
 
-                    var user = _service.GetUserByEmail(userEmail);
+                    var user = _userService.GetUserByEmail(userEmail);
 
                     user.IsConnected = false;
                     user.ConnectionId = null;
 
-                    _service.UpdateUser(user);
+                    _userService.UpdateUser(user);
 
-                    await Clients.All.SendAsync("UpdateUserList", _service.GetAllConnectedUsers());
+                    await Clients.All.SendAsync("UpdateUserList", _userService.GetAllConnectedUsers());
                 }
                 catch (Exception ex)
                 {

@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     title = 'ClientApp';
     txtMessage: string = '';
-    uniqueID: string = new Date().getTime().toString();
+
     messages = new Array<Message>();
     message = new Message();
 
@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     private _hubConnection: HubConnection;
 
-    constructor(private accountService: AccountService, private router: Router) {
+    constructor(private accountService: AccountService, private chatService: ChatService, private router: Router) {
         this.user = this.accountService.getUserInfo;
         if (!this.user) {
             this.router.navigate(['/login']);
@@ -38,6 +38,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     sendMessage(): void {
         if (this.txtMessage) {
             this.message = new Message();
+            this.message.senderId = this.user.id;
+            this.message.receiverId = this.chatUser.id;
             this.message.senderConnectionId = this.user.connectionId;
             this.message.receiverConnectionId = this.chatUser.connectionId;
             this.message.type = "sent";
@@ -51,7 +53,37 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     selectUser(user) {
         this.chatUser = user;
-        //this.chatLog();
+        this.chatLog();
+    }
+
+    chatLog() {
+        this.messages = [];
+        this.chatService.getChatLog(this.user.id, this.chatUser.id)
+            .subscribe(
+                response => {
+
+                    if (response != null) {
+                        var chatLog = response;
+
+                        if (chatLog.length > 0) {
+                            this.messages = [];
+
+                            chatLog.forEach((chat: Message) => {
+                                if (chat.receiverId == this.user.id) {
+                                    chat.type = "sent";
+                                }
+                                else {
+                                    chat.type = "received";
+                                }
+
+                                this.messages.push(chat);
+                            });
+                        }
+                    }
+                }, error => {
+                    console.log(error);
+                }
+            );
     }
 
     signalrConn() {

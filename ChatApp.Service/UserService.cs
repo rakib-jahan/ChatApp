@@ -1,27 +1,31 @@
 ﻿using ChatApp.Model;
 using ChatApp.Repository;
 using ChatApp.Repository.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ChatApp.Service
 {
-    public class UserService : IUserService
+    public class UserService : IUser, IChat
     {
-        private IRepository<User> _repository;
+        private IRepository<User> _userRepository;
+        private IRepository<ChatHistory> _chatRepository;
 
-        public UserService(IRepository<User> repository)
+        public UserService(IRepository<User> userRepo, IRepository<ChatHistory> chatRepo)
         {
-            _repository = repository;
+            _userRepository = userRepo;
+            _chatRepository = chatRepo;
         }
 
         public UserViewModel GetUserByEmail(string email)
         {
-            var user = _repository.FindByCondition(x => x.Email.Equals(email)).FirstOrDefault();
+            var user = _userRepository.FindByCondition(x => x.Email.Equals(email)).FirstOrDefault();
 
             if (user != null)
             {
-                return new UserViewModel() {
+                return new UserViewModel()
+                {
                     Id = user.Id,
                     Email = user.Email,
                     FirstName = user.FirstName,
@@ -37,7 +41,7 @@ namespace ChatApp.Service
         public List<UserViewModel> GetAllConnectedUsers()
         {
             var connectedUsers = new List<UserViewModel>();
-            var users = _repository.FindByCondition(x => x.IsConnected.Equals(true));
+            var users = _userRepository.FindByCondition(x => x.IsConnected.Equals(true));
 
             foreach (var u in users)
             {
@@ -57,7 +61,7 @@ namespace ChatApp.Service
 
         public UserViewModel GetUserById(int id)
         {
-            var user = _repository.FindByCondition(x => x.Id.Equals(id)).FirstOrDefault();
+            var user = _userRepository.FindByCondition(x => x.Id.Equals(id)).FirstOrDefault();
 
             if (user != null)
             {
@@ -86,7 +90,7 @@ namespace ChatApp.Service
                 IsConnected = false
             };
 
-            _repository.Create(users);
+            _userRepository.Create(users);
         }
 
         public void UpdateUser(UserViewModel user)
@@ -101,7 +105,41 @@ namespace ChatApp.Service
                 IsConnected = user.IsConnected
             };
 
-            _repository.Update(users);
+            _userRepository.Update(users);
+        }
+
+        public void AddChat(MessageViewModel message)
+        {
+            var chatHistory = new ChatHistory()
+            {
+                Id = message.id,
+                SenderId = message.senderId,
+                ReceiverId = message.receiverId,
+                Message = message.message,
+                CreatedOn = DateTime.Now
+            };
+
+            _chatRepository.Create(chatHistory);
+        }
+
+        public List<MessageViewModel> GetChatHistory(int senderId, int receiverId)
+        {
+            var chatHistory = new List<MessageViewModel>();
+            var chats = _chatRepository.FindByCondition(x => x.SenderId.Equals(senderId) && x.ReceiverId.Equals(receiverId));
+
+            foreach (var chat in chats)
+            {
+                chatHistory.Add(new MessageViewModel()
+                {
+                    id = chat.Id,
+                    senderId = chat.SenderId,
+                    receiverId = chat.ReceiverId,
+                    message = chat.Message,
+                    date = chat.CreatedOn
+                });
+            }
+
+            return chatHistory;
         }
     }
 }

@@ -617,8 +617,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _models_message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../models/message */ "./app/models/message.ts");
 /* harmony import */ var _aspnet_signalr__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @aspnet/signalr */ "../node_modules/@aspnet/signalr/dist/esm/index.js");
 /* harmony import */ var _services_account_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/account.service */ "./app/services/account.service.ts");
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ "../node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/common */ "../node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
+/* harmony import */ var _services_chat_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/chat.service */ "./app/services/chat.service.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/router */ "../node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/common */ "../node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
+
 
 
 
@@ -708,12 +710,12 @@ function HomeComponent_div_5_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", msg_r5.type == "sent");
 } }
 class HomeComponent {
-    constructor(accountService, router) {
+    constructor(accountService, chatService, router) {
         this.accountService = accountService;
+        this.chatService = chatService;
         this.router = router;
         this.title = 'ClientApp';
         this.txtMessage = '';
-        this.uniqueID = new Date().getTime().toString();
         this.messages = new Array();
         this.message = new _models_message__WEBPACK_IMPORTED_MODULE_1__["Message"]();
         this.onlineUser = Array();
@@ -728,6 +730,8 @@ class HomeComponent {
     sendMessage() {
         if (this.txtMessage) {
             this.message = new _models_message__WEBPACK_IMPORTED_MODULE_1__["Message"]();
+            this.message.senderId = this.user.id;
+            this.message.receiverId = this.chatUser.id;
             this.message.senderConnectionId = this.user.connectionId;
             this.message.receiverConnectionId = this.chatUser.connectionId;
             this.message.type = "sent";
@@ -740,7 +744,30 @@ class HomeComponent {
     }
     selectUser(user) {
         this.chatUser = user;
-        //this.chatLog();
+        this.chatLog();
+    }
+    chatLog() {
+        this.messages = [];
+        this.chatService.getChatLog(this.user.id, this.chatUser.id)
+            .subscribe(response => {
+            if (response != null) {
+                var chatLog = response;
+                if (chatLog.length > 0) {
+                    this.messages = [];
+                    chatLog.forEach((chat) => {
+                        if (chat.receiverId == this.user.id) {
+                            chat.type = "sent";
+                        }
+                        else {
+                            chat.type = "received";
+                        }
+                        this.messages.push(chat);
+                    });
+                }
+            }
+        }, error => {
+            console.log(error);
+        });
     }
     signalrConn() {
         this._hubConnection = new _aspnet_signalr__WEBPACK_IMPORTED_MODULE_2__["HubConnectionBuilder"]()
@@ -781,7 +808,7 @@ class HomeComponent {
             });
     }
 }
-HomeComponent.ɵfac = function HomeComponent_Factory(t) { return new (t || HomeComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"])); };
+HomeComponent.ɵfac = function HomeComponent_Factory(t) { return new (t || HomeComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_chat_service__WEBPACK_IMPORTED_MODULE_4__["ChatService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_5__["Router"])); };
 HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: HomeComponent, selectors: [["ng-component"]], decls: 11, vars: 4, consts: [[1, "row", "d-flex", "justify-content-center", "mt-5", 2, "height", "500px"], [1, "col-2", "pt-3", "border"], [4, "ngFor", "ngForOf"], [1, "col-6", "border", "border-left-0"], [1, "pt-3", 2, "height", "450px"], [1, "row", "pt-1"], [1, "col", "pr-0"], ["type", "text", "placeholder", "Type a message", 1, "form-control", 3, "value", "input", "keydown.enter"], ["type", "button", 1, "btn", "btn-primary", "mr-2", 3, "disabled", "click"], [1, "d-flex", "mb-2", 2, "cursor", "pointer", 3, "click"], [1, "position-relative", "w-12", "h-12"], ["src", "avatar.png", "alt", "user image", 1, "rounded-full", "border", "border-gray-100", "shadow-sm"], [1, "absolute", "top-0", "right-0", "h-3", "w-3", "my-1", "border-2", "border-white", "rounded-full", "bg-green-400", "z-2"], [1, "align-self-center", "ml-2", "text-muted", "h6"], ["class", "row", 4, "ngIf"], [1, "row"], [1, "col"], [1, "alert", "alert-warning", "float-left"], [1, "d-block", 2, "font-weight", "500"], [1, "d-block", "text-secondary", 2, "font-weight", "400", "font-size", "12px"], [1, "alert", "alert-info", "float-right"], [1, "d-block", "text-info", 2, "font-weight", "400", "font-size", "12px"]], template: function HomeComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
@@ -813,14 +840,14 @@ HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComp
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("value", ctx.txtMessage);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.chatUser);
-    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_5__["NgForOf"], _angular_common__WEBPACK_IMPORTED_MODULE_5__["NgIf"]], pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_5__["DatePipe"]], styles: ["*[_ngcontent-%COMP%], [_ngcontent-%COMP%]::after, [_ngcontent-%COMP%]::before {\r\n  box-sizing: border-box;\r\n  border-width: 0;\r\n  border-style: solid;\r\n  border-color: #e2e8f0;\r\n}\r\n\r\n.w-12[_ngcontent-%COMP%] {\r\n  width: 3rem;\r\n}\r\n\r\n.h-12[_ngcontent-%COMP%] {\r\n  height: 3rem;\r\n}\r\n\r\n.shadow-sm[_ngcontent-%COMP%] {\r\n  box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);\r\n}\r\n\r\n.border[_ngcontent-%COMP%] {\r\n  border-width: 1px;\r\n}\r\n\r\n.rounded-full[_ngcontent-%COMP%] {\r\n  border-radius: 9999px;\r\n}\r\n\r\n.border-gray-100[_ngcontent-%COMP%] {\r\n  --border-opacity: 1;\r\n  border-color: #f7fafc;\r\n}\r\n\r\nimg[_ngcontent-%COMP%], video[_ngcontent-%COMP%] {\r\n  max-width: 100%;\r\n  height: auto;\r\n}\r\n\r\naudio[_ngcontent-%COMP%], canvas[_ngcontent-%COMP%], embed[_ngcontent-%COMP%], iframe[_ngcontent-%COMP%], img[_ngcontent-%COMP%], object[_ngcontent-%COMP%], svg[_ngcontent-%COMP%], video[_ngcontent-%COMP%] {\r\n  display: block;\r\n  vertical-align: middle;\r\n}\r\n\r\nimg[_ngcontent-%COMP%] {\r\n  border-style: solid;\r\n}\r\n\r\n.w-3[_ngcontent-%COMP%] {\r\n  width: .75rem;\r\n}\r\n\r\n.right-0[_ngcontent-%COMP%] {\r\n  right: 0;\r\n}\r\n\r\n.top-0[_ngcontent-%COMP%] {\r\n  top: 0;\r\n}\r\n\r\n.absolute[_ngcontent-%COMP%] {\r\n  position: absolute;\r\n}\r\n\r\n.my-1[_ngcontent-%COMP%] {\r\n  margin-top: .25rem;\r\n  margin-bottom: .25rem;\r\n}\r\n\r\n.h-3[_ngcontent-%COMP%] {\r\n  height: .75rem;\r\n}\r\n\r\n.border-2[_ngcontent-%COMP%] {\r\n  border-width: 2px;\r\n}\r\n\r\n.rounded-full[_ngcontent-%COMP%] {\r\n  border-radius: 9999px;\r\n}\r\n\r\n.border-white[_ngcontent-%COMP%] {\r\n  --border-opacity: 1;\r\n  border-color: #fff;\r\n}\r\n\r\n.bg-green-400[_ngcontent-%COMP%] {\r\n  --bg-opacity: 1;\r\n  background-color: #68d391;\r\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvaG9tZS9ob21lLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsa0JBQWtCOztBQUVsQjtFQUNFLHNCQUFzQjtFQUN0QixlQUFlO0VBQ2YsbUJBQW1CO0VBQ25CLHFCQUFxQjtBQUN2Qjs7QUFFQTtFQUNFLFdBQVc7QUFDYjs7QUFFQTtFQUNFLFlBQVk7QUFDZDs7QUFFQTtFQUNFLHVDQUF1QztBQUN6Qzs7QUFFQTtFQUNFLGlCQUFpQjtBQUNuQjs7QUFFQTtFQUNFLHFCQUFxQjtBQUN2Qjs7QUFFQTtFQUNFLG1CQUFtQjtFQUNuQixxQkFBcUI7QUFDdkI7O0FBRUE7RUFDRSxlQUFlO0VBQ2YsWUFBWTtBQUNkOztBQUVBO0VBQ0UsY0FBYztFQUNkLHNCQUFzQjtBQUN4Qjs7QUFFQTtFQUNFLG1CQUFtQjtBQUNyQjs7QUFFQTtFQUNFLGFBQWE7QUFDZjs7QUFFQTtFQUNFLFFBQVE7QUFDVjs7QUFFQTtFQUNFLE1BQU07QUFDUjs7QUFFQTtFQUNFLGtCQUFrQjtBQUNwQjs7QUFFQTtFQUNFLGtCQUFrQjtFQUNsQixxQkFBcUI7QUFDdkI7O0FBRUE7RUFDRSxjQUFjO0FBQ2hCOztBQUVBO0VBQ0UsaUJBQWlCO0FBQ25COztBQUVBO0VBQ0UscUJBQXFCO0FBQ3ZCOztBQUVBO0VBQ0UsbUJBQW1CO0VBQ25CLGtCQUFrQjtBQUNwQjs7QUFFQTtFQUNFLGVBQWU7RUFDZix5QkFBeUI7QUFDM0IiLCJmaWxlIjoic3JjL2FwcC9ob21lL2hvbWUuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qIENpcmNsZSBhdmF0YXIgKi9cclxuXHJcbiosIDo6YWZ0ZXIsIDo6YmVmb3JlIHtcclxuICBib3gtc2l6aW5nOiBib3JkZXItYm94O1xyXG4gIGJvcmRlci13aWR0aDogMDtcclxuICBib3JkZXItc3R5bGU6IHNvbGlkO1xyXG4gIGJvcmRlci1jb2xvcjogI2UyZThmMDtcclxufVxyXG5cclxuLnctMTIge1xyXG4gIHdpZHRoOiAzcmVtO1xyXG59XHJcblxyXG4uaC0xMiB7XHJcbiAgaGVpZ2h0OiAzcmVtO1xyXG59XHJcblxyXG4uc2hhZG93LXNtIHtcclxuICBib3gtc2hhZG93OiAwIDFweCAycHggMCByZ2JhKDAsMCwwLC4wNSk7XHJcbn1cclxuXHJcbi5ib3JkZXIge1xyXG4gIGJvcmRlci13aWR0aDogMXB4O1xyXG59XHJcblxyXG4ucm91bmRlZC1mdWxsIHtcclxuICBib3JkZXItcmFkaXVzOiA5OTk5cHg7XHJcbn1cclxuXHJcbi5ib3JkZXItZ3JheS0xMDAge1xyXG4gIC0tYm9yZGVyLW9wYWNpdHk6IDE7XHJcbiAgYm9yZGVyLWNvbG9yOiAjZjdmYWZjO1xyXG59XHJcblxyXG5pbWcsIHZpZGVvIHtcclxuICBtYXgtd2lkdGg6IDEwMCU7XHJcbiAgaGVpZ2h0OiBhdXRvO1xyXG59XHJcblxyXG5hdWRpbywgY2FudmFzLCBlbWJlZCwgaWZyYW1lLCBpbWcsIG9iamVjdCwgc3ZnLCB2aWRlbyB7XHJcbiAgZGlzcGxheTogYmxvY2s7XHJcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcclxufVxyXG5cclxuaW1nIHtcclxuICBib3JkZXItc3R5bGU6IHNvbGlkO1xyXG59XHJcblxyXG4udy0zIHtcclxuICB3aWR0aDogLjc1cmVtO1xyXG59XHJcblxyXG4ucmlnaHQtMCB7XHJcbiAgcmlnaHQ6IDA7XHJcbn1cclxuXHJcbi50b3AtMCB7XHJcbiAgdG9wOiAwO1xyXG59XHJcblxyXG4uYWJzb2x1dGUge1xyXG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxufVxyXG5cclxuLm15LTEge1xyXG4gIG1hcmdpbi10b3A6IC4yNXJlbTtcclxuICBtYXJnaW4tYm90dG9tOiAuMjVyZW07XHJcbn1cclxuXHJcbi5oLTMge1xyXG4gIGhlaWdodDogLjc1cmVtO1xyXG59XHJcblxyXG4uYm9yZGVyLTIge1xyXG4gIGJvcmRlci13aWR0aDogMnB4O1xyXG59XHJcblxyXG4ucm91bmRlZC1mdWxsIHtcclxuICBib3JkZXItcmFkaXVzOiA5OTk5cHg7XHJcbn1cclxuXHJcbi5ib3JkZXItd2hpdGUge1xyXG4gIC0tYm9yZGVyLW9wYWNpdHk6IDE7XHJcbiAgYm9yZGVyLWNvbG9yOiAjZmZmO1xyXG59XHJcblxyXG4uYmctZ3JlZW4tNDAwIHtcclxuICAtLWJnLW9wYWNpdHk6IDE7XHJcbiAgYmFja2dyb3VuZC1jb2xvcjogIzY4ZDM5MTtcclxufVxyXG4iXX0= */"] });
+    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_6__["NgForOf"], _angular_common__WEBPACK_IMPORTED_MODULE_6__["NgIf"]], pipes: [_angular_common__WEBPACK_IMPORTED_MODULE_6__["DatePipe"]], styles: ["*[_ngcontent-%COMP%], [_ngcontent-%COMP%]::after, [_ngcontent-%COMP%]::before {\r\n  box-sizing: border-box;\r\n  border-width: 0;\r\n  border-style: solid;\r\n  border-color: #e2e8f0;\r\n}\r\n\r\n.w-12[_ngcontent-%COMP%] {\r\n  width: 3rem;\r\n}\r\n\r\n.h-12[_ngcontent-%COMP%] {\r\n  height: 3rem;\r\n}\r\n\r\n.shadow-sm[_ngcontent-%COMP%] {\r\n  box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);\r\n}\r\n\r\n.border[_ngcontent-%COMP%] {\r\n  border-width: 1px;\r\n}\r\n\r\n.rounded-full[_ngcontent-%COMP%] {\r\n  border-radius: 9999px;\r\n}\r\n\r\n.border-gray-100[_ngcontent-%COMP%] {\r\n  --border-opacity: 1;\r\n  border-color: #f7fafc;\r\n}\r\n\r\nimg[_ngcontent-%COMP%], video[_ngcontent-%COMP%] {\r\n  max-width: 100%;\r\n  height: auto;\r\n}\r\n\r\naudio[_ngcontent-%COMP%], canvas[_ngcontent-%COMP%], embed[_ngcontent-%COMP%], iframe[_ngcontent-%COMP%], img[_ngcontent-%COMP%], object[_ngcontent-%COMP%], svg[_ngcontent-%COMP%], video[_ngcontent-%COMP%] {\r\n  display: block;\r\n  vertical-align: middle;\r\n}\r\n\r\nimg[_ngcontent-%COMP%] {\r\n  border-style: solid;\r\n}\r\n\r\n.w-3[_ngcontent-%COMP%] {\r\n  width: .75rem;\r\n}\r\n\r\n.right-0[_ngcontent-%COMP%] {\r\n  right: 0;\r\n}\r\n\r\n.top-0[_ngcontent-%COMP%] {\r\n  top: 0;\r\n}\r\n\r\n.absolute[_ngcontent-%COMP%] {\r\n  position: absolute;\r\n}\r\n\r\n.my-1[_ngcontent-%COMP%] {\r\n  margin-top: .25rem;\r\n  margin-bottom: .25rem;\r\n}\r\n\r\n.h-3[_ngcontent-%COMP%] {\r\n  height: .75rem;\r\n}\r\n\r\n.border-2[_ngcontent-%COMP%] {\r\n  border-width: 2px;\r\n}\r\n\r\n.rounded-full[_ngcontent-%COMP%] {\r\n  border-radius: 9999px;\r\n}\r\n\r\n.border-white[_ngcontent-%COMP%] {\r\n  --border-opacity: 1;\r\n  border-color: #fff;\r\n}\r\n\r\n.bg-green-400[_ngcontent-%COMP%] {\r\n  --bg-opacity: 1;\r\n  background-color: #68d391;\r\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvaG9tZS9ob21lLmNvbXBvbmVudC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEsa0JBQWtCOztBQUVsQjtFQUNFLHNCQUFzQjtFQUN0QixlQUFlO0VBQ2YsbUJBQW1CO0VBQ25CLHFCQUFxQjtBQUN2Qjs7QUFFQTtFQUNFLFdBQVc7QUFDYjs7QUFFQTtFQUNFLFlBQVk7QUFDZDs7QUFFQTtFQUNFLHVDQUF1QztBQUN6Qzs7QUFFQTtFQUNFLGlCQUFpQjtBQUNuQjs7QUFFQTtFQUNFLHFCQUFxQjtBQUN2Qjs7QUFFQTtFQUNFLG1CQUFtQjtFQUNuQixxQkFBcUI7QUFDdkI7O0FBRUE7RUFDRSxlQUFlO0VBQ2YsWUFBWTtBQUNkOztBQUVBO0VBQ0UsY0FBYztFQUNkLHNCQUFzQjtBQUN4Qjs7QUFFQTtFQUNFLG1CQUFtQjtBQUNyQjs7QUFFQTtFQUNFLGFBQWE7QUFDZjs7QUFFQTtFQUNFLFFBQVE7QUFDVjs7QUFFQTtFQUNFLE1BQU07QUFDUjs7QUFFQTtFQUNFLGtCQUFrQjtBQUNwQjs7QUFFQTtFQUNFLGtCQUFrQjtFQUNsQixxQkFBcUI7QUFDdkI7O0FBRUE7RUFDRSxjQUFjO0FBQ2hCOztBQUVBO0VBQ0UsaUJBQWlCO0FBQ25COztBQUVBO0VBQ0UscUJBQXFCO0FBQ3ZCOztBQUVBO0VBQ0UsbUJBQW1CO0VBQ25CLGtCQUFrQjtBQUNwQjs7QUFFQTtFQUNFLGVBQWU7RUFDZix5QkFBeUI7QUFDM0IiLCJmaWxlIjoic3JjL2FwcC9ob21lL2hvbWUuY29tcG9uZW50LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qIENpcmNsZSBhdmF0YXIgKi9cclxuXHJcbiosIDo6YWZ0ZXIsIDo6YmVmb3JlIHtcclxuICBib3gtc2l6aW5nOiBib3JkZXItYm94O1xyXG4gIGJvcmRlci13aWR0aDogMDtcclxuICBib3JkZXItc3R5bGU6IHNvbGlkO1xyXG4gIGJvcmRlci1jb2xvcjogI2UyZThmMDtcclxufVxyXG5cclxuLnctMTIge1xyXG4gIHdpZHRoOiAzcmVtO1xyXG59XHJcblxyXG4uaC0xMiB7XHJcbiAgaGVpZ2h0OiAzcmVtO1xyXG59XHJcblxyXG4uc2hhZG93LXNtIHtcclxuICBib3gtc2hhZG93OiAwIDFweCAycHggMCByZ2JhKDAsMCwwLC4wNSk7XHJcbn1cclxuXHJcbi5ib3JkZXIge1xyXG4gIGJvcmRlci13aWR0aDogMXB4O1xyXG59XHJcblxyXG4ucm91bmRlZC1mdWxsIHtcclxuICBib3JkZXItcmFkaXVzOiA5OTk5cHg7XHJcbn1cclxuXHJcbi5ib3JkZXItZ3JheS0xMDAge1xyXG4gIC0tYm9yZGVyLW9wYWNpdHk6IDE7XHJcbiAgYm9yZGVyLWNvbG9yOiAjZjdmYWZjO1xyXG59XHJcblxyXG5pbWcsIHZpZGVvIHtcclxuICBtYXgtd2lkdGg6IDEwMCU7XHJcbiAgaGVpZ2h0OiBhdXRvO1xyXG59XHJcblxyXG5hdWRpbywgY2FudmFzLCBlbWJlZCwgaWZyYW1lLCBpbWcsIG9iamVjdCwgc3ZnLCB2aWRlbyB7XHJcbiAgZGlzcGxheTogYmxvY2s7XHJcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcclxufVxyXG5cclxuaW1nIHtcclxuICBib3JkZXItc3R5bGU6IHNvbGlkO1xyXG59XHJcblxyXG4udy0zIHtcclxuICB3aWR0aDogLjc1cmVtO1xyXG59XHJcblxyXG4ucmlnaHQtMCB7XHJcbiAgcmlnaHQ6IDA7XHJcbn1cclxuXHJcbi50b3AtMCB7XHJcbiAgdG9wOiAwO1xyXG59XHJcblxyXG4uYWJzb2x1dGUge1xyXG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxufVxyXG5cclxuLm15LTEge1xyXG4gIG1hcmdpbi10b3A6IC4yNXJlbTtcclxuICBtYXJnaW4tYm90dG9tOiAuMjVyZW07XHJcbn1cclxuXHJcbi5oLTMge1xyXG4gIGhlaWdodDogLjc1cmVtO1xyXG59XHJcblxyXG4uYm9yZGVyLTIge1xyXG4gIGJvcmRlci13aWR0aDogMnB4O1xyXG59XHJcblxyXG4ucm91bmRlZC1mdWxsIHtcclxuICBib3JkZXItcmFkaXVzOiA5OTk5cHg7XHJcbn1cclxuXHJcbi5ib3JkZXItd2hpdGUge1xyXG4gIC0tYm9yZGVyLW9wYWNpdHk6IDE7XHJcbiAgYm9yZGVyLWNvbG9yOiAjZmZmO1xyXG59XHJcblxyXG4uYmctZ3JlZW4tNDAwIHtcclxuICAtLWJnLW9wYWNpdHk6IDE7XHJcbiAgYmFja2dyb3VuZC1jb2xvcjogIzY4ZDM5MTtcclxufVxyXG4iXX0= */"] });
 /*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](HomeComponent, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"],
         args: [{
                 templateUrl: 'home.component.html',
                 styleUrls: ['home.component.css']
             }]
-    }], function () { return [{ type: _services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"] }]; }, null); })();
+    }], function () { return [{ type: _services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"] }, { type: _services_chat_service__WEBPACK_IMPORTED_MODULE_4__["ChatService"] }, { type: _angular_router__WEBPACK_IMPORTED_MODULE_5__["Router"] }]; }, null); })();
 
 
 /***/ }),
@@ -915,70 +942,23 @@ AccountService.ɵprov = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineIn
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ChatService", function() { return ChatService; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "../node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
-/* harmony import */ var _aspnet_signalr__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @aspnet/signalr */ "../node_modules/@aspnet/signalr/dist/esm/index.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common/http */ "../node_modules/@angular/common/__ivy_ngcc__/fesm2015/http.js");
 
 
 
 class ChatService {
-    constructor() {
-        this.messageReceived = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
-        this.connectionEstablished = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
-        this.userConnected = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
-        this.userDisconnected = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["EventEmitter"]();
-        this.connectionIsEstablished = false;
-        this.createConnection();
-        this.registerOnServerEvents();
-        this.startConnection();
+    constructor(_http) {
+        this._http = _http;
     }
-    sendMessage(message) {
-        this._hubConnection.invoke('NewMessage', message);
-    }
-    createConnection() {
-        var email = 'rakib@gmail.com';
-        this._hubConnection = new _aspnet_signalr__WEBPACK_IMPORTED_MODULE_1__["HubConnectionBuilder"]()
-            .withUrl(`${window.location.origin}/MessageHub?email=${email}`)
-            .build();
-    }
-    startConnection() {
-        this._hubConnection
-            .start()
-            .then(() => {
-            this.connectionIsEstablished = true;
-            console.log('Hub connection started');
-            this.connectionEstablished.emit(true);
-        })
-            .catch(err => {
-            console.log('Error while establishing connection, retrying...');
-            setTimeout(() => { this.startConnection(); }, 5000);
-        });
-    }
-    registerOnServerEvents() {
-        this._hubConnection.on('MessageReceived', (data) => {
-            this.messageReceived.emit(data);
-        });
-        this._hubConnection.on('UserConnected', (data) => {
-            this.userConnected.emit(data);
-        });
-        //this._hubConnection.on('UserDisconnected', (data: any) => {
-        //    console.log('UserDisconnected : ' + data);
-        //    this.userDisconnected.emit(data);
-        //});
-    }
-    destroyConnection() {
-        this._hubConnection
-            .stop()
-            .then(function () {
-            console.log("Stopped");
-        }).catch(function (err) {
-            return console.error(err.toString());
-        });
+    getChatLog(senderId, receiverId) {
+        return this._http.get(`${window.location.origin}/chats/chatLog?senderId=${senderId}&receiverId=${receiverId}`);
     }
 }
-ChatService.ɵfac = function ChatService_Factory(t) { return new (t || ChatService)(); };
+ChatService.ɵfac = function ChatService_Factory(t) { return new (t || ChatService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"])); };
 ChatService.ɵprov = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: ChatService, factory: ChatService.ɵfac });
 /*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](ChatService, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"]
-    }], function () { return []; }, null); })();
+    }], function () { return [{ type: _angular_common_http__WEBPACK_IMPORTED_MODULE_1__["HttpClient"] }]; }, null); })();
 
 
 /***/ }),

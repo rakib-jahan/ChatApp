@@ -3,26 +3,18 @@ using ChatApp.Models;
 using ChatApp.Service;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace ChatApp.Controllers
 {
     [Route("[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserService _service;
+        private readonly IUser _service;
 
-        public UsersController(IUserService service)
+        public UsersController(IUser service)
         {
             _service = service;
         }
-
-        //[HttpGet]
-        //public UserViewModel Get(string email)
-        //{
-        //    return _service.GetUserByEmail(email);
-        //}
 
         [HttpPost("authenticate")]
         public IActionResult Authenticate(string email)
