@@ -4,6 +4,7 @@ using ChatApp.Repository.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ChatApp.Service
 {
@@ -108,7 +109,7 @@ namespace ChatApp.Service
             _userRepository.Update(users);
         }
 
-        public void AddChat(MessageViewModel message)
+        public async Task AddChat(MessageViewModel message)
         {
             var chatHistory = new ChatHistory()
             {
@@ -119,7 +120,7 @@ namespace ChatApp.Service
                 CreatedOn = DateTime.Now
             };
 
-            _chatRepository.Create(chatHistory);
+            await _chatRepository.AsyncCreate(chatHistory);
         }
 
         public List<MessageViewModel> GetChatHistory(int senderId, int receiverId)

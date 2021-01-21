@@ -744,7 +744,7 @@ class HomeComponent {
     }
     selectUser(user) {
         this.chatUser = user;
-        //this.chatLog();
+        this.chatLog();
     }
     chatLog() {
         this.messages = [];

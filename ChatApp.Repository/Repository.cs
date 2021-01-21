@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace ChatApp.Repository
 {
@@ -23,6 +24,12 @@ namespace ChatApp.Repository
         {
             this._context.Set<T>().Add(entity);
             _context.SaveChanges();
+        }
+
+        public async Task AsyncCreate(T entity)
+        {
+            this._context.Set<T>().Add(entity);
+            await  _context.SaveChangesAsync();
         }
 
         public void Update(T entity)

@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     selectUser(user) {
         this.chatUser = user;
-        //this.chatLog();
+        this.chatLog();
     }
 
     chatLog() {

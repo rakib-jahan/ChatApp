@@ -50,7 +50,7 @@ namespace ChatApp.Hubs
 
         public async Task SendMessageToUser(MessageViewModel msg)
         {
-            _chatService.AddChat(msg);
+            await _chatService.AddChat(msg);
             await Clients.Client(msg.receiverConnectionId).SendAsync("ReceivedMessage", msg);
         }
 
