@@ -744,7 +744,7 @@ class HomeComponent {
     }
     selectUser(user) {
         this.chatUser = user;
-        this.chatLog();
+        //this.chatLog();
     }
     chatLog() {
         this.messages = [];
@@ -755,7 +755,7 @@ class HomeComponent {
                 if (chatLog.length > 0) {
                     this.messages = [];
                     chatLog.forEach((chat) => {
-                        if (chat.receiverId == this.user.id) {
+                        if (chat.senderId == this.user.id) {
                             chat.type = "sent";
                         }
                         else {
@@ -809,7 +809,7 @@ class HomeComponent {
     }
 }
 HomeComponent.ɵfac = function HomeComponent_Factory(t) { return new (t || HomeComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_chat_service__WEBPACK_IMPORTED_MODULE_4__["ChatService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_5__["Router"])); };
-HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: HomeComponent, selectors: [["ng-component"]], decls: 11, vars: 4, consts: [[1, "row", "d-flex", "justify-content-center", "mt-5", 2, "height", "500px"], [1, "col-2", "pt-3", "border"], [4, "ngFor", "ngForOf"], [1, "col-6", "border", "border-left-0"], [1, "pt-3", 2, "height", "450px"], [1, "row", "pt-1"], [1, "col", "pr-0"], ["type", "text", "placeholder", "Type a message", 1, "form-control", 3, "value", "input", "keydown.enter"], ["type", "button", 1, "btn", "btn-primary", "mr-2", 3, "disabled", "click"], [1, "d-flex", "mb-2", 2, "cursor", "pointer", 3, "click"], [1, "position-relative", "w-12", "h-12"], ["src", "avatar.png", "alt", "user image", 1, "rounded-full", "border", "border-gray-100", "shadow-sm"], [1, "absolute", "top-0", "right-0", "h-3", "w-3", "my-1", "border-2", "border-white", "rounded-full", "bg-green-400", "z-2"], [1, "align-self-center", "ml-2", "text-muted", "h6"], ["class", "row", 4, "ngIf"], [1, "row"], [1, "col"], [1, "alert", "alert-warning", "float-left"], [1, "d-block", 2, "font-weight", "500"], [1, "d-block", "text-secondary", 2, "font-weight", "400", "font-size", "12px"], [1, "alert", "alert-info", "float-right"], [1, "d-block", "text-info", 2, "font-weight", "400", "font-size", "12px"]], template: function HomeComponent_Template(rf, ctx) { if (rf & 1) {
+HomeComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: HomeComponent, selectors: [["ng-component"]], decls: 11, vars: 4, consts: [[1, "row", "d-flex", "justify-content-center", "mt-5", 2, "height", "500px"], [1, "col-2", "pt-3", "border"], [4, "ngFor", "ngForOf"], [1, "col-6", "border", "border-left-0", "pr-0"], [1, "pt-3", "pr-1", 2, "height", "450px", "overflow-y", "auto", "overflow-x", "hidden"], [1, "row", "pt-1"], [1, "col", "pr-0"], ["type", "text", "placeholder", "Type a message", 1, "form-control", 3, "value", "input", "keydown.enter"], ["type", "button", 1, "btn", "btn-primary", "mr-4", 3, "disabled", "click"], [1, "d-flex", "mb-2", 2, "cursor", "pointer", 3, "click"], [1, "position-relative", "w-12", "h-12"], ["src", "avatar.png", "alt", "user image", 1, "rounded-full", "border", "border-gray-100", "shadow-sm"], [1, "absolute", "top-0", "right-0", "h-3", "w-3", "my-1", "border-2", "border-white", "rounded-full", "bg-green-400", "z-2"], [1, "align-self-center", "ml-2", "text-muted", "h6"], ["class", "row", 4, "ngIf"], [1, "row"], [1, "col"], [1, "alert", "alert-warning", "float-left"], [1, "d-block", 2, "font-weight", "500"], [1, "d-block", "text-secondary", 2, "font-weight", "400", "font-size", "12px"], [1, "alert", "alert-info", "float-right"], [1, "d-block", "text-info", 2, "font-weight", "400", "font-size", "12px"]], template: function HomeComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](2, HomeComponent_div_2_Template, 7, 1, "div", 2);

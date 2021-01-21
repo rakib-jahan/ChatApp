@@ -125,7 +125,11 @@ namespace ChatApp.Service
         public List<MessageViewModel> GetChatHistory(int senderId, int receiverId)
         {
             var chatHistory = new List<MessageViewModel>();
-            var chats = _chatRepository.FindByCondition(x => x.SenderId.Equals(senderId) && x.ReceiverId.Equals(receiverId));
+            var chats = _chatRepository.FindByCondition(x =>
+            (
+                x.SenderId.Equals(senderId) && x.ReceiverId.Equals(receiverId)) ||
+                x.SenderId.Equals(receiverId) && x.ReceiverId.Equals(senderId)
+            );
 
             foreach (var chat in chats)
             {

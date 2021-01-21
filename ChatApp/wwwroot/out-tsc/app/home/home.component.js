@@ -37,7 +37,7 @@ let HomeComponent = class HomeComponent {
     }
     selectUser(user) {
         this.chatUser = user;
-        this.chatLog();
+        //this.chatLog();
     }
     chatLog() {
         this.messages = [];
@@ -48,7 +48,7 @@ let HomeComponent = class HomeComponent {
                 if (chatLog.length > 0) {
                     this.messages = [];
                     chatLog.forEach((chat) => {
-                        if (chat.receiverId == this.user.id) {
+                        if (chat.senderId == this.user.id) {
                             chat.type = "sent";
                         }
                         else {

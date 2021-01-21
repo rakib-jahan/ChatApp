@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     selectUser(user) {
         this.chatUser = user;
-        this.chatLog();
+        //this.chatLog();
     }
 
     chatLog() {
@@ -69,7 +69,7 @@ export class HomeComponent implements OnInit, OnDestroy {
                             this.messages = [];
 
                             chatLog.forEach((chat: Message) => {
-                                if (chat.receiverId == this.user.id) {
+                                if (chat.senderId == this.user.id) {
                                     chat.type = "sent";
                                 }
                                 else {

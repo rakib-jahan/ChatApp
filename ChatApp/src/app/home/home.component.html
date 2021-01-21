@@ -10,8 +10,8 @@
             </div>
         </div>
     </div>
-    <div class="col-6 border border-left-0">
-        <div style="height:450px;" class="pt-3">
+    <div class="col-6 border border-left-0 pr-0">
+        <div style="height: 450px;overflow-y: auto;overflow-x: hidden;" class="pt-3 pr-1">
             <div *ngFor="let msg of messages">
                 <div class="row" *ngIf="msg.type == 'received'">
                     <div class="col">
@@ -40,7 +40,7 @@
                 <input class="form-control" type="text" [value]="txtMessage" (input)="txtMessage=$event.target.value"
                        (keydown.enter)="sendMessage()" placeholder="Type a message" />
             </div>
-            <button [disabled]="!chatUser" type="button" (click)="sendMessage()" class="btn btn-primary mr-2">Send</button>
+            <button [disabled]="!chatUser" type="button" (click)="sendMessage()" class="btn btn-primary mr-4">Send</button>
         </div>
     </div>
 </div>
