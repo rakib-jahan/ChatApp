@@ -30,7 +30,7 @@ namespace ChatApp.Repository
 
         public async Task<T> AsyncCreate(T entity)
         {
-            this._context.Set<T>().Add(entity);
+            await this._context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
