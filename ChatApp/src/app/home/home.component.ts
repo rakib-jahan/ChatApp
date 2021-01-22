@@ -56,6 +56,18 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.chatLog();
     }
 
+    deleteChat(msg: Message) {
+        msg.isDeleted = true;
+        this.chatService.deleteChat(msg.id)
+            .subscribe(
+                response => {
+                    console.log('deleteChat success : ' + msg.id);
+                }, error => {
+                    console.log(error);
+                }
+            );
+    }
+
     chatLog() {
         this.messages = [];
         this.chatService.getChatLog(this.user.id, this.chatUser.id)

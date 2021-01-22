@@ -15,9 +15,15 @@
             <div *ngFor="let msg of messages">
                 <div class="row" *ngIf="msg.type == 'received'">
                     <div class="col">
-                        <div class="alert alert-warning float-left">
+                        <div *ngIf="!msg.isDeleted" class="alert alert-warning float-left">
                             <span class="d-block" style=" font-weight: 500;">{{msg.message}}</span>
                             <span class="d-block text-secondary" style=" font-weight: 400; font-size: 12px;">
+                                <span><em>{{msg.date | date:'medium'}}</em></span>
+                            </span>
+                        </div>
+                        <div *ngIf="msg.isDeleted" class="alert float-left border border-danger">
+                            <span class="d-block text-danger" style="font-weight: 500;">Message removed</span>
+                            <span class="d-block text-info" style=" font-weight: 400; font-size: 12px;">
                                 <span><em>{{msg.date | date:'medium'}}</em></span>
                             </span>
                         </div>
@@ -25,8 +31,15 @@
                 </div>
                 <div class="row" *ngIf="msg.type == 'sent'">
                     <div class="col">
-                        <div class="alert alert-info float-right">
+                        <div *ngIf="!msg.isDeleted" class="alert alert-info float-right">
+                            <i (click)="deleteChat(msg)" class="fa fa-trash-o text-danger" aria-hidden="true" style="position: absolute;right: 5px;cursor:pointer"></i>
                             <span class="d-block" style=" font-weight: 500;">{{msg.message}}</span>
+                            <span class="d-block text-info" style=" font-weight: 400; font-size: 12px;">
+                                <span><em>{{msg.date | date:'medium'}}</em></span>
+                            </span>
+                        </div>
+                        <div *ngIf="msg.isDeleted" class="alert float-right border border-danger">
+                            <span class="d-block text-danger" style="font-weight: 500;">Message removed</span>
                             <span class="d-block text-info" style=" font-weight: 400; font-size: 12px;">
                                 <span><em>{{msg.date | date:'medium'}}</em></span>
                             </span>

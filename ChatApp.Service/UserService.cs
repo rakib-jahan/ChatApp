@@ -127,6 +127,13 @@ namespace ChatApp.Service
             return message;
         }
 
+        public void UpdateChat(int id)
+        {
+            var message = _chatRepository.FindByCondition(x => x.Id.Equals(id)).FirstOrDefault();
+            message.IsDeleted = true;
+            _chatRepository.Update(message);
+        }
+
         public List<MessageViewModel> GetChatHistory(int senderId, int receiverId)
         {
             var chatHistory = new List<MessageViewModel>();
@@ -144,7 +151,8 @@ namespace ChatApp.Service
                     senderId = chat.SenderId,
                     receiverId = chat.ReceiverId,
                     message = chat.Message,
-                    date = chat.CreatedOn
+                    date = chat.CreatedOn,
+                    isDeleted = chat.IsDeleted
                 });
             }
 

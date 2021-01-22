@@ -39,6 +39,15 @@ let HomeComponent = class HomeComponent {
         this.chatUser = user;
         this.chatLog();
     }
+    deleteChat(msg) {
+        msg.isDeleted = true;
+        this.chatService.deleteChat(msg.id)
+            .subscribe(response => {
+            console.log('deleteChat success : ' + msg.id);
+        }, error => {
+            console.log(error);
+        });
+    }
     chatLog() {
         this.messages = [];
         this.chatService.getChatLog(this.user.id, this.chatUser.id)

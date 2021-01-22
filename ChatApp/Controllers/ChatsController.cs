@@ -25,5 +25,11 @@ namespace ChatApp.Controllers
         {
             return _service.GetChatHistory(senderId, receiverId);
         }
+
+        [HttpPost("deleteChat")]
+        public void DeleteChat(int id)
+        {
+            _service.UpdateChat(id);
+        }
     }
 }
