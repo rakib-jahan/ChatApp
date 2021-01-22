@@ -1,5 +1,5 @@
 <div class="row d-flex justify-content-center mt-5">
-    <div class="card m-3">
+    <div class="card border-success m-3 p-3">
         <div class="card-body pb-0">
             <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
                 <div class="form-row">
@@ -31,7 +31,7 @@
                         <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                         Register
                     </button>
-                    <a routerLink="../login" class="btn btn-link">Cancel</a>
+                    <a routerLink="../login" class="btn btn-link text-success">Cancel</a>
                 </div>
             </form>
         </div>

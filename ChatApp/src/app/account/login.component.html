@@ -1,26 +1,27 @@
 <div class="row d-flex justify-content-center mt-5">
-  <div class="card col-5">
-    <div class="card-body pb-0">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="text" formControlName="userEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.userEmail.errors }" placeholder="Ex : abc@gmail.com" (keyup)="onKeyUpEvent($event)" />
-          <div *ngIf="submitted && f.userEmail.errors" class="invalid-feedback">
-            <div *ngIf="f.userEmail.errors.required">Email is required</div>
-            <div *ngIf="f.userEmail.errors.email">Email must be a valid email address</div>
-          </div>
-          <div *ngIf="submitted && isError" class="custom-invalid-feedback">
-            {{errorMsg}}
-          </div>
+    <div class="card col-4 border-success">
+        <div class="card-body mt-2 pb-3">
+            <h4 class="d-block pb-2 border-success text-success">Sign in</h4>
+            <form class="mt-4" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" formControlName="userEmail" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.userEmail.errors }" placeholder="Ex : abc@gmail.com" (keyup)="onKeyUpEvent($event)" />
+                    <div *ngIf="submitted && f.userEmail.errors" class="invalid-feedback">
+                        <div *ngIf="f.userEmail.errors.required">Email is required</div>
+                        <div *ngIf="f.userEmail.errors.email">Email must be a valid email address</div>
+                    </div>
+                    <div *ngIf="submitted && isError" class="custom-invalid-feedback">
+                        {{errorMsg}}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button [disabled]="loading" class="btn btn-primary">
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                        Login
+                    </button>
+                    <a routerLink="../register" class="btn btn-link text-success">Register</a>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-          <button [disabled]="loading" class="btn btn-primary">
-            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-            Login
-          </button>
-          <a routerLink="../register" class="btn btn-link">Register</a>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
