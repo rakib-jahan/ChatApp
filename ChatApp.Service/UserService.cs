@@ -109,7 +109,7 @@ namespace ChatApp.Service
             _userRepository.Update(users);
         }
 
-        public async Task AddChat(MessageViewModel message)
+        public async Task<MessageViewModel> AddChat(MessageViewModel message)
         {
             var chatHistory = new ChatHistory()
             {
@@ -117,10 +117,14 @@ namespace ChatApp.Service
                 SenderId = message.senderId,
                 ReceiverId = message.receiverId,
                 Message = message.message,
-                CreatedOn = DateTime.Now
+                CreatedOn = DateTime.Now,
+                IsDeleted = false
             };
 
-            await _chatRepository.AsyncCreate(chatHistory);
+            var ret = await _chatRepository.AsyncCreate(chatHistory);
+            message.id = ret.Id;
+
+            return message;
         }
 
         public List<MessageViewModel> GetChatHistory(int senderId, int receiverId)

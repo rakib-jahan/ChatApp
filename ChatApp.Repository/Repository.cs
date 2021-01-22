@@ -20,25 +20,31 @@ namespace ChatApp.Repository
             return _context.Set<T>().Where(expression).AsNoTracking();
         }
 
-        public void Create(T entity)
+        public T Create(T entity)
         {
             this._context.Set<T>().Add(entity);
             _context.SaveChanges();
+
+            return entity;
         }
 
-        public async Task AsyncCreate(T entity)
+        public async Task<T> AsyncCreate(T entity)
         {
             this._context.Set<T>().Add(entity);
-            await  _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
-        public void Update(T entity)
+        public T Update(T entity)
         {
             if (entity != null)
             {
                 _context.Entry(entity).State = EntityState.Modified;
                 _context.SaveChanges();
+                return entity;
             }
+
+            return entity;
         }
     }
 }

@@ -37,7 +37,7 @@
         </div>
         <div class="row pt-2 mr-0 pb-2" style="border-top: 1px solid #e2e8f0;">
             <div class="col pr-0">
-                <input class="form-control" type="text" [value]="txtMessage" (input)="txtMessage=$event.target.value"
+                <input style="box-shadow: none;" class="form-control" type="text" [value]="txtMessage" (input)="txtMessage=$event.target.value"
                        (keydown.enter)="sendMessage()" placeholder="Type a message" />
             </div>
             <button [disabled]="!chatUser" type="button" (click)="sendMessage()" class="btn btn-primary mr-2">Send</button>

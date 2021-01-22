@@ -13,5 +13,6 @@ namespace ChatApp.Repository.Entity
         public int ReceiverId { get; set; }
         public string Message { get; set; }
         public DateTime CreatedOn { get; set; }
+        public Boolean IsDeleted { get; set; }
     }
 }

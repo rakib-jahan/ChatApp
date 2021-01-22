@@ -43,11 +43,6 @@ namespace ChatApp.Hubs
             }
         }
 
-        //public async Task NewMessage(Message msg)
-        //{
-        //    await Clients.All.SendAsync("MessageReceived", msg);
-        //}
-
         public async Task SendMessageToUser(MessageViewModel msg)
         {
             await _chatService.AddChat(msg);

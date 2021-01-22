@@ -10,8 +10,8 @@ namespace ChatApp.Repository
     public interface IRepository<T>
     {
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
-        void Create(T entity);
-        Task AsyncCreate(T entity);
-        void Update(T entity);
+        T Create(T entity);
+        Task<T> AsyncCreate(T entity);
+        T Update(T entity);
     }
 }

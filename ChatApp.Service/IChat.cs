@@ -8,7 +8,7 @@ namespace ChatApp.Service
 {
     public interface IChat
     {
-        Task AddChat(MessageViewModel message);
+        Task<MessageViewModel> AddChat(MessageViewModel message);
         List<MessageViewModel> GetChatHistory(int senderId, int receiverId);
     }
 }
