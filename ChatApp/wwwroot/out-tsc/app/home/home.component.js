@@ -1,5 +1,5 @@
 import { __decorate } from "tslib";
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Message } from '../models/message';
 import { HubConnectionBuilder } from '@aspnet/signalr';
 let HomeComponent = class HomeComponent {
@@ -18,7 +18,17 @@ let HomeComponent = class HomeComponent {
         }
     }
     ngOnInit() {
+        this.scrollToBottom();
         this.signalrConn();
+    }
+    ngAfterViewChecked() {
+        this.scrollToBottom();
+    }
+    scrollToBottom() {
+        try {
+            this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+        }
+        catch (err) { }
     }
     sendMessage() {
         if (this.txtMessage) {
@@ -65,6 +75,7 @@ let HomeComponent = class HomeComponent {
                         }
                         this.messages.push(chat);
                     });
+                    this.scrollToBottom();
                 }
             }
         }, error => {
@@ -110,6 +121,9 @@ let HomeComponent = class HomeComponent {
             });
     }
 };
+__decorate([
+    ViewChild('scrollMe')
+], HomeComponent.prototype, "myScrollContainer", void 0);
 HomeComponent = __decorate([
     Component({
         templateUrl: 'home.component.html',

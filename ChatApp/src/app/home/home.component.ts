@@ -1,4 +1,4 @@
-import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Message } from '../models/message';
 import { ChatService } from '../services/chat.service';
@@ -11,6 +11,8 @@ import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
     styleUrls: ['home.component.css']
 })
 export class HomeComponent implements OnInit, OnDestroy {
+
+    @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
     title = 'ClientApp';
     txtMessage: string = '';
@@ -32,7 +34,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.scrollToBottom();
         this.signalrConn();
+    }
+
+    ngAfterViewChecked() {
+        this.scrollToBottom();
+    } 
+
+    scrollToBottom(): void {
+        try {
+            this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+        } catch (err) { }
     }
 
     sendMessage(): void {
@@ -90,6 +103,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
                                 this.messages.push(chat);
                             });
+
+                            this.scrollToBottom();
                         }
                     }
                 }, error => {
