@@ -113,16 +113,16 @@ namespace ChatApp.Service
         {
             var chatHistory = new ChatHistory()
             {
-                Id = message.id,
-                SenderId = message.senderId,
-                ReceiverId = message.receiverId,
-                Message = message.message,
+                Id = message.Id,
+                SenderId = message.SenderId,
+                ReceiverId = message.ReceiverId,
+                Message = message.Message,
                 CreatedOn = DateTime.Now,
                 IsDeleted = false
             };
 
             var ret = await _chatRepository.AsyncCreate(chatHistory);
-            message.id = ret.Id;
+            message.Id = ret.Id;
 
             return message;
         }
@@ -147,12 +147,12 @@ namespace ChatApp.Service
             {
                 chatHistory.Add(new MessageViewModel()
                 {
-                    id = chat.Id,
-                    senderId = chat.SenderId,
-                    receiverId = chat.ReceiverId,
-                    message = chat.Message,
-                    date = chat.CreatedOn,
-                    isDeleted = chat.IsDeleted
+                    Id = chat.Id,
+                    SenderId = chat.SenderId,
+                    ReceiverId = chat.ReceiverId,
+                    Message = chat.Message,
+                    Date = chat.CreatedOn,
+                    IsDeleted = chat.IsDeleted
                 });
             }
 

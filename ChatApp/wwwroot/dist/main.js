@@ -793,7 +793,30 @@ class HomeComponent {
     }
     ngOnInit() {
         this.scrollToBottom();
-        this.signalrConn();
+        this._hubConnection = new _aspnet_signalr__WEBPACK_IMPORTED_MODULE_2__["HubConnectionBuilder"]()
+            .withUrl(`${window.location.origin}/MessageHub?email=${this.user.email}`)
+            .build();
+        this._hubConnection
+            .start()
+            .then(() => console.log('user ' + this.user.email + ' connected - ' + Date().toString()))
+            .catch(err => console.log('Error while establishing connection :('));
+        this._hubConnection.on('ReceivedMessage', (message) => {
+            message.type = "received";
+            this.messages.push(message);
+        });
+        this._hubConnection.on('UpdateUserList', (onlineuser) => {
+            var users = JSON.parse(JSON.stringify(onlineuser));
+            users.forEach((user) => {
+                if (user.email !== this.user.email && !this.onlineUser.some(r => r.email === user.email)) {
+                    this.onlineUser.push(user);
+                }
+                else {
+                    this.user.connectionId = user.connectionId;
+                    this.user.isConnected = user.isConnected;
+                }
+                console.log('new user ' + user.email + ' connected - ' + Date().toString());
+            });
+        });
     }
     ngAfterViewChecked() {
         this.scrollToBottom();
@@ -856,43 +879,17 @@ class HomeComponent {
             console.log(error);
         });
     }
-    signalrConn() {
-        this._hubConnection = new _aspnet_signalr__WEBPACK_IMPORTED_MODULE_2__["HubConnectionBuilder"]()
-            .withUrl(`${window.location.origin}/MessageHub?email=${this.user.email}`)
-            .build();
-        this._hubConnection.on('UpdateUserList', (onlineuser) => {
-            var users = JSON.parse(JSON.stringify(onlineuser));
-            users.forEach((user) => {
-                if (user.email !== this.user.email && !this.onlineUser.some(r => r.email === user.email)) {
-                    this.onlineUser.push(user);
-                }
-                else {
-                    this.user.connectionId = user.connectionId;
-                    this.user.isConnected = user.isConnected;
-                }
-            });
-        });
-        this._hubConnection.on('ReceivedMessage', (message) => {
-            message.type = "received";
-            this.messages.push(message);
-        });
-        this._hubConnection
-            .start()
-            .then(function () {
-            console.log("Connected");
-        }).catch(function (err) {
-            return console.error(err.toString());
-        });
-    }
     ngOnDestroy() {
-        if (this._hubConnection)
+        if (this._hubConnection) {
             this._hubConnection
                 .stop()
                 .then(function () {
                 console.log("Stopped");
-            }).catch(function (err) {
+            })
+                .catch(function (err) {
                 return console.error(err.toString());
             });
+        }
     }
 }
 HomeComponent.ɵfac = function HomeComponent_Factory(t) { return new (t || HomeComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_account_service__WEBPACK_IMPORTED_MODULE_3__["AccountService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_services_chat_service__WEBPACK_IMPORTED_MODULE_4__["ChatService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_router__WEBPACK_IMPORTED_MODULE_5__["Router"])); };

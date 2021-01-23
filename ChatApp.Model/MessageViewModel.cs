@@ -7,14 +7,14 @@ namespace ChatApp.Model
 {
     public class MessageViewModel
     {
-        public int id { get; set; }
-        public int senderId { get; set; }
-        public int receiverId { get; set; }
-        public string receiverConnectionId { get; set; }
-        public string senderConnectionId { get; set; }
-        public string type { get; set; }
-        public string message { get; set; }
-        public DateTime date { get; set; }
-        public Boolean isDeleted { get; set; }
+        public int Id { get; set; }
+        public int SenderId { get; set; }
+        public int ReceiverId { get; set; }
+        public string ReceiverConnectionId { get; set; }
+        public string SenderConnectionId { get; set; }
+        public string Type { get; set; }
+        public string Message { get; set; }
+        public DateTime Date { get; set; }
+        public Boolean IsDeleted { get; set; }
     }
 }

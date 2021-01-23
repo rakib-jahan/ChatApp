@@ -46,7 +46,7 @@ namespace ChatApp.Hubs
         public async Task SendMessageToUser(MessageViewModel msg)
         {
             await _chatService.AddChat(msg);
-            await Clients.Client(msg.receiverConnectionId).SendAsync("ReceivedMessage", msg);
+            await Clients.Client(msg.ReceiverConnectionId).SendAsync("ReceivedMessage", msg);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)

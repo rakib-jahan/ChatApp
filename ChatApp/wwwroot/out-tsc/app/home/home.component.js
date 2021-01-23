@@ -19,7 +19,30 @@ let HomeComponent = class HomeComponent {
     }
     ngOnInit() {
         this.scrollToBottom();
-        this.signalrConn();
+        this._hubConnection = new HubConnectionBuilder()
+            .withUrl(`${window.location.origin}/MessageHub?email=${this.user.email}`)
+            .build();
+        this._hubConnection
+            .start()
+            .then(() => console.log('user ' + this.user.email + ' connected - ' + Date().toString()))
+            .catch(err => console.log('Error while establishing connection :('));
+        this._hubConnection.on('ReceivedMessage', (message) => {
+            message.type = "received";
+            this.messages.push(message);
+        });
+        this._hubConnection.on('UpdateUserList', (onlineuser) => {
+            var users = JSON.parse(JSON.stringify(onlineuser));
+            users.forEach((user) => {
+                if (user.email !== this.user.email && !this.onlineUser.some(r => r.email === user.email)) {
+                    this.onlineUser.push(user);
+                }
+                else {
+                    this.user.connectionId = user.connectionId;
+                    this.user.isConnected = user.isConnected;
+                }
+                console.log('new user ' + user.email + ' connected - ' + Date().toString());
+            });
+        });
     }
     ngAfterViewChecked() {
         this.scrollToBottom();
@@ -82,43 +105,17 @@ let HomeComponent = class HomeComponent {
             console.log(error);
         });
     }
-    signalrConn() {
-        this._hubConnection = new HubConnectionBuilder()
-            .withUrl(`${window.location.origin}/MessageHub?email=${this.user.email}`)
-            .build();
-        this._hubConnection.on('UpdateUserList', (onlineuser) => {
-            var users = JSON.parse(JSON.stringify(onlineuser));
-            users.forEach((user) => {
-                if (user.email !== this.user.email && !this.onlineUser.some(r => r.email === user.email)) {
-                    this.onlineUser.push(user);
-                }
-                else {
-                    this.user.connectionId = user.connectionId;
-                    this.user.isConnected = user.isConnected;
-                }
-            });
-        });
-        this._hubConnection.on('ReceivedMessage', (message) => {
-            message.type = "received";
-            this.messages.push(message);
-        });
-        this._hubConnection
-            .start()
-            .then(function () {
-            console.log("Connected");
-        }).catch(function (err) {
-            return console.error(err.toString());
-        });
-    }
     ngOnDestroy() {
-        if (this._hubConnection)
+        if (this._hubConnection) {
             this._hubConnection
                 .stop()
                 .then(function () {
                 console.log("Stopped");
-            }).catch(function (err) {
+            })
+                .catch(function (err) {
                 return console.error(err.toString());
             });
+        }
     }
 };
 __decorate([
