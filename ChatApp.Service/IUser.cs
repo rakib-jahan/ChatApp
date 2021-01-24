@@ -5,6 +5,7 @@ namespace ChatApp.Service
 {
     public interface IUser
     {
+        List<UserViewModel> GetAllUsers();
         UserViewModel GetUserById(int id);
         UserViewModel GetUserByEmail(string email);
         void RegisterUser(UserViewModel user);

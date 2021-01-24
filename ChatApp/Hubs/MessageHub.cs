@@ -35,7 +35,7 @@ namespace ChatApp.Hubs
 
                     _userService.UpdateUser(user);
 
-                    await Clients.All.SendAsync("UpdateUserList", _userService.GetAllConnectedUsers());
+                    await Clients.All.SendAsync("UpdateUserList", _userService.GetAllUsers());
                 }
                 catch (Exception ex)
                 {

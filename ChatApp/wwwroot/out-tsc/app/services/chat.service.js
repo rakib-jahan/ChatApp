@@ -7,6 +7,9 @@ let ChatService = class ChatService {
     getChatLog(senderId, receiverId) {
         return this._http.get(`${window.location.origin}/chats/chatLog?senderId=${senderId}&receiverId=${receiverId}`);
     }
+    getChatUsers(id) {
+        return this._http.get(`${window.location.origin}/chats/chatUsers?id=${id}`);
+    }
     deleteChat(id) {
         return this._http.post(`${window.location.origin}/chats/deleteChat?id=${id}`, {});
     }

@@ -9,6 +9,7 @@ namespace ChatApp.Repository
 {
     public interface IRepository<T>
     {
+        IEnumerable<T> GetAll();
         IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression);
         T Create(T entity);
         Task<T> AsyncCreate(T entity);

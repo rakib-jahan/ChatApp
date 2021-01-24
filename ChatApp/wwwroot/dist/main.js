@@ -807,8 +807,13 @@ class HomeComponent {
         this._hubConnection.on('UpdateUserList', (onlineuser) => {
             var users = JSON.parse(JSON.stringify(onlineuser));
             users.forEach((user) => {
-                if (user.email !== this.user.email && !this.onlineUser.some(r => r.email === user.email)) {
-                    this.onlineUser.push(user);
+                if (user.email !== this.user.email) {
+                    if (this.onlineUser.some(r => r.email === user.email)) {
+                        this.user.connectionId = user.connectionId;
+                        this.user.isConnected = user.isConnected;
+                    }
+                    else
+                        this.onlineUser.push(user);
                 }
                 else {
                     this.user.connectionId = user.connectionId;
@@ -1045,6 +1050,9 @@ class ChatService {
     }
     getChatLog(senderId, receiverId) {
         return this._http.get(`${window.location.origin}/chats/chatLog?senderId=${senderId}&receiverId=${receiverId}`);
+    }
+    getChatUsers(id) {
+        return this._http.get(`${window.location.origin}/chats/chatUsers?id=${id}`);
     }
     deleteChat(id) {
         return this._http.post(`${window.location.origin}/chats/deleteChat?id=${id}`, {});

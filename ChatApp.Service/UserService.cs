@@ -60,6 +60,27 @@ namespace ChatApp.Service
             return connectedUsers;
         }
 
+        public List<UserViewModel> GetAllUsers()
+        {
+            var connectedUsers = new List<UserViewModel>();
+            var users = _userRepository.GetAll();
+
+            foreach (var u in users)
+            {
+                connectedUsers.Add(new UserViewModel()
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    IsConnected = u.IsConnected,
+                    ConnectionId = u.ConnectionId
+                });
+            }
+
+            return connectedUsers;
+        }
+
         public UserViewModel GetUserById(int id)
         {
             var user = _userRepository.FindByCondition(x => x.Id.Equals(id)).FirstOrDefault();
@@ -157,6 +178,30 @@ namespace ChatApp.Service
             }
 
             return chatHistory;
+        }
+
+        public List<UserViewModel> GetChatUsers(int id)
+        {
+            var users = new List<UserViewModel>();
+
+            var connectedIds = _chatRepository.FindByCondition(x => x.SenderId.Equals(id)).Select(x => x.ReceiverId).Distinct().ToList();
+
+            foreach (var connectedId in connectedIds)
+            {
+                var user = _userRepository.FindByCondition(x => x.Id.Equals(connectedId)).FirstOrDefault();
+
+                users.Add(new UserViewModel()
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email,
+                    IsConnected = user.IsConnected,
+                    ConnectionId = user.ConnectionId
+                });
+            }
+
+            return users;
         }
     }
 }
