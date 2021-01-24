@@ -20,12 +20,6 @@ namespace ChatApp.Controllers
             _service = service;
         }
 
-        [HttpGet("chatUsers")]
-        public List<UserViewModel> GetChatUsers(int id)
-        {
-            return _service.GetChatUsers(id);
-        }
-
         [HttpGet("chatLog")]
         public List<MessageViewModel> GetChatHistory(int senderId, int receiverId)
         {

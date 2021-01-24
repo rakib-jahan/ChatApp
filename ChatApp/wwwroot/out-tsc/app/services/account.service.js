@@ -18,6 +18,9 @@ let AccountService = class AccountService {
     getUserDetail(userEmail) {
         return this._http.get(`${window.location.origin}/users/${userEmail}`);
     }
+    getAllUsers() {
+        return this._http.get(`${window.location.origin}/users/allUsers`);
+    }
     login(userEmail) {
         return this._http.post(`${window.location.origin}/users/authenticate?email=${userEmail}`, {})
             .pipe(map(user => {

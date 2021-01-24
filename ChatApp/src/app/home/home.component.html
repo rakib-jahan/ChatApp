@@ -4,7 +4,7 @@
             <div class="d-flex mb-2" style="cursor: pointer;" (click)="selectUser(user)">
                 <div class="position-relative w-12 h-12">
                     <img class="rounded-full border border-gray-100 shadow-sm" src="avatar.png" alt="user image" />
-                    <div class="absolute top-0 right-0 h-3 w-3 my-1 border-2 border-white rounded-full bg-green-400 z-2"></div>
+                    <div  *ngIf="user.isConnected" class="absolute top-0 right-0 h-3 w-3 my-1 border-2 border-white rounded-full bg-green-400 z-2"></div>
                 </div>
                 <span class="align-self-center ml-2 text-muted h6">{{user.firstName}}</span>
             </div>

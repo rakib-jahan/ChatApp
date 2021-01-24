@@ -34,6 +34,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
+        this.accountService.getAllUsers()
+            .subscribe(
+                response => {
+                    var users = response;
+                    users.forEach((user: any) => {
+                        if (user.email !== this.user.email) {
+                            this.onlineUser.push(user);
+                        }                        
+                    });
+                }, error => {
+                    console.log(error);
+                }
+            );
 
         this.scrollToBottom();
 
@@ -52,23 +65,12 @@ export class HomeComponent implements OnInit, OnDestroy {
         });
 
         this._hubConnection.on('UpdateUserList', (onlineuser) => {
-            var users = JSON.parse(JSON.stringify(onlineuser));
-            users.forEach((user: User) => {
-                if (user.email !== this.user.email) {
-                    if (this.onlineUser.some(r => r.email === user.email)) {
-                        this.user.connectionId = user.connectionId;
-                        this.user.isConnected = user.isConnected;
-                    }
-                    else
-                        this.onlineUser.push(user);
-                }
-                else {
-                    this.user.connectionId = user.connectionId;
-                    this.user.isConnected = user.isConnected;
-                }
-
-                console.log('new user ' + user.email + ' connected - ' + Date().toString());
-            });
+            var user = JSON.parse(JSON.stringify(onlineuser));
+            var searchUser = this.onlineUser.find(element => element.id == user.id);
+            if (searchUser) {
+                searchUser.connectionId = user.connectionId;
+                searchUser.isConnected = user.isConnected;
+            }
         });
     }
 
@@ -120,7 +122,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.chatService.getChatLog(this.user.id, this.chatUser.id)
             .subscribe(
                 response => {
-
                     if (response != null) {
                         var chatLog = response;
 
@@ -134,10 +135,8 @@ export class HomeComponent implements OnInit, OnDestroy {
                                 else {
                                     chat.type = "received";
                                 }
-
                                 this.messages.push(chat);
                             });
-
                             this.scrollToBottom();
                         }
                     }

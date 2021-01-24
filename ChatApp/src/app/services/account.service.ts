@@ -32,6 +32,10 @@ export class AccountService {
         return this._http.get<User>(`${window.location.origin}/users/${userEmail}`);
     }
 
+    getAllUsers() {
+        return this._http.get<User[]>(`${window.location.origin}/users/allUsers`);
+    }
+
     login(userEmail: string) {
         return this._http.post<User>(`${window.location.origin}/users/authenticate?email=${userEmail}`, {})
             .pipe(map(user => {

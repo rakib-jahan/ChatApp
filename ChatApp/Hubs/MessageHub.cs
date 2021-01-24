@@ -35,7 +35,7 @@ namespace ChatApp.Hubs
 
                     _userService.UpdateUser(user);
 
-                    await Clients.All.SendAsync("UpdateUserList", _userService.GetAllUsers());
+                    await Clients.All.SendAsync("UpdateUserList", user);
                 }
                 catch (Exception ex)
                 {
@@ -46,7 +46,8 @@ namespace ChatApp.Hubs
         public async Task SendMessageToUser(MessageViewModel msg)
         {
             await _chatService.AddChat(msg);
-            await Clients.Client(msg.ReceiverConnectionId).SendAsync("ReceivedMessage", msg);
+            if (!string.IsNullOrEmpty(msg.ReceiverConnectionId))
+                await Clients.Client(msg.ReceiverConnectionId).SendAsync("ReceivedMessage", msg);
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
@@ -68,7 +69,7 @@ namespace ChatApp.Hubs
 
                     _userService.UpdateUser(user);
 
-                    await Clients.All.SendAsync("UpdateUserList", _userService.GetAllConnectedUsers());
+                    await Clients.All.SendAsync("UpdateUserList", user);
                 }
                 catch (Exception ex)
                 {

@@ -12,10 +12,6 @@ export class ChatService {
         return this._http.get<Message[]>(`${window.location.origin}/chats/chatLog?senderId=${senderId}&receiverId=${receiverId}`);
     }
 
-    getChatUsers(id: number) {
-        return this._http.get<Message[]>(`${window.location.origin}/chats/chatUsers?id=${id}`);
-    }
-
     deleteChat(id: number) {
         return this._http.post(`${window.location.origin}/chats/deleteChat?id=${id}`, {});
     }

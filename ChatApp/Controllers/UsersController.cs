@@ -2,6 +2,7 @@
 using ChatApp.Models;
 using ChatApp.Service;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace ChatApp.Controllers
 {
@@ -14,6 +15,12 @@ namespace ChatApp.Controllers
         public UsersController(IUser service)
         {
             _service = service;
+        }
+
+        [HttpGet("allUsers")]
+        public List<UserViewModel> GetAllUsers()
+        {
+            return _service.GetAllUsers();
         }
 
         [HttpPost("authenticate")]

@@ -18,6 +18,17 @@ let HomeComponent = class HomeComponent {
         }
     }
     ngOnInit() {
+        this.accountService.getAllUsers()
+            .subscribe(response => {
+            var users = response;
+            users.forEach((user) => {
+                if (user.email !== this.user.email) {
+                    this.onlineUser.push(user);
+                }
+            });
+        }, error => {
+            console.log(error);
+        });
         this.scrollToBottom();
         this._hubConnection = new HubConnectionBuilder()
             .withUrl(`${window.location.origin}/MessageHub?email=${this.user.email}`)
@@ -31,22 +42,12 @@ let HomeComponent = class HomeComponent {
             this.messages.push(message);
         });
         this._hubConnection.on('UpdateUserList', (onlineuser) => {
-            var users = JSON.parse(JSON.stringify(onlineuser));
-            users.forEach((user) => {
-                if (user.email !== this.user.email) {
-                    if (this.onlineUser.some(r => r.email === user.email)) {
-                        this.user.connectionId = user.connectionId;
-                        this.user.isConnected = user.isConnected;
-                    }
-                    else
-                        this.onlineUser.push(user);
-                }
-                else {
-                    this.user.connectionId = user.connectionId;
-                    this.user.isConnected = user.isConnected;
-                }
-                console.log('new user ' + user.email + ' connected - ' + Date().toString());
-            });
+            var user = JSON.parse(JSON.stringify(onlineuser));
+            var searchUser = this.onlineUser.find(element => element.id == user.id);
+            if (searchUser) {
+                searchUser.connectionId = user.connectionId;
+                searchUser.isConnected = user.isConnected;
+            }
         });
     }
     ngAfterViewChecked() {
