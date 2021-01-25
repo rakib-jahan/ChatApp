@@ -827,6 +827,11 @@ class HomeComponent {
                 searchUser.connectionId = user.connectionId;
                 searchUser.isConnected = user.isConnected;
             }
+            else {
+                if (user.email !== this.user.email) {
+                    this.onlineUser.push(user);
+                }
+            }
         });
     }
     ngAfterViewChecked() {
